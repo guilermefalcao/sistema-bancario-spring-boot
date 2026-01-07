@@ -1,0 +1,18 @@
+-- Execute no Oracle como CONTA_APP/1234
+
+-- Criar sequência para CLIENTE se não existir
+CREATE SEQUENCE SEQ_CLIENTE START WITH 100 INCREMENT BY 1;
+
+-- Criar sequência para CONTA se não existir  
+CREATE SEQUENCE SEQ_CONTA START WITH 100 INCREMENT BY 1;
+
+-- Criar sequência para MOVIMENTACAO se não existir
+CREATE SEQUENCE SEQ_MOVIMENTACAO START WITH 1000 INCREMENT BY 1;
+
+-- Verificar sequências criadas
+SELECT sequence_name FROM user_sequences WHERE sequence_name IN ('SEQ_CLIENTE', 'SEQ_CONTA', 'SEQ_MOVIMENTACAO');
+
+-- Testar próximo valor
+SELECT SEQ_CLIENTE.NEXTVAL FROM DUAL;
+SELECT SEQ_CONTA.NEXTVAL FROM DUAL;
+SELECT SEQ_MOVIMENTACAO.NEXTVAL FROM DUAL;

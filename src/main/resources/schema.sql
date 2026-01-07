@@ -1,0 +1,24 @@
+-- Script para criar a tabela CONTA no Oracle
+-- Execute este script no seu banco Oracle antes de iniciar a aplicação
+
+-- Criar sequência para o ID
+CREATE SEQUENCE CONTA_SEQ
+    START WITH 1
+    INCREMENT BY 1
+    NOCACHE
+    NOCYCLE;
+
+-- Criar tabela CONTA
+CREATE TABLE CONTA (
+    ID NUMBER(19) PRIMARY KEY,
+    TITULAR VARCHAR2(100) NOT NULL,
+    SALDO NUMBER(15,2) NOT NULL CHECK (SALDO >= 0),
+    CONSTRAINT UK_CONTA_TITULAR UNIQUE (TITULAR)
+);
+
+-- Inserir dados de teste
+INSERT INTO CONTA (ID, TITULAR, SALDO) VALUES (CONTA_SEQ.NEXTVAL, 'João Silva', 1000.00);
+INSERT INTO CONTA (ID, TITULAR, SALDO) VALUES (CONTA_SEQ.NEXTVAL, 'Maria Santos', 2500.50);
+INSERT INTO CONTA (ID, TITULAR, SALDO) VALUES (CONTA_SEQ.NEXTVAL, 'Pedro Oliveira', 750.25);
+
+COMMIT;

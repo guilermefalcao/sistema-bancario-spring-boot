@@ -1,0 +1,35 @@
+# COMANDOS CURL CORRETOS PARA POWERSHELL
+# Execute linha por linha no terminal
+
+# 1. Remover alias do curl
+Remove-Item alias:curl -ErrorAction SilentlyContinue
+
+# 2. GET - Listar todas as contas
+curl -X GET http://localhost:8080/contas
+
+# 3. POST - Criar nova conta (JSON com aspas simples externas)
+curl -X POST http://localhost:8080/contas -H 'Content-Type: application/json' -d '{\"titular\":\"João Silva\",\"saldo\":1500.00}'
+
+# 4. POST - Criar segunda conta
+curl -X POST http://localhost:8080/contas -H 'Content-Type: application/json' -d '{\"titular\":\"Maria Santos\",\"saldo\":2500.50}'
+
+# 5. GET - Listar contas após criação
+curl -X GET http://localhost:8080/contas
+
+# 6. GET - Buscar conta por ID
+curl -X GET http://localhost:8080/contas/1
+
+# 7. PUT - Atualizar conta completa
+curl -X PUT http://localhost:8080/contas/1 -H 'Content-Type: application/json' -d '{\"titular\":\"João Atualizado\",\"saldo\":2000.00}'
+
+# 8. PATCH - Atualizar apenas saldo
+curl -X PATCH http://localhost:8080/contas/1 -H 'Content-Type: application/json' -d '{\"saldo\":3000.00}'
+
+# 9. GET - Verificar alterações
+curl -X GET http://localhost:8080/contas
+
+# 10. DELETE - Excluir conta
+curl -X DELETE http://localhost:8080/contas/2
+
+# 11. GET - Verificar exclusão
+curl -X GET http://localhost:8080/contas
