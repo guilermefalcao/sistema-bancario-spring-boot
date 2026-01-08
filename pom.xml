@@ -58,6 +58,12 @@
             <version>21.9.0.0</version>
         </dependency>
 
+        <!-- Flyway Migration -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+
         <!-- Testes (JUnit, Mockito, etc) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
