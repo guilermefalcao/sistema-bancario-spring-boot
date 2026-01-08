@@ -588,13 +588,8 @@
                     
                     if (response.ok) {
                         showMessage('Depósito realizado com sucesso!', 'success');
-                        listarContas();
-                        gerarExtratoBusca(idConta, document.getElementById(`extrato-busca-${idConta}`)); // Atualizar extrato
-                        // Refazer busca se houver termo
-                        const termoBusca = document.getElementById('busca').value.trim();
-                        if (termoBusca) {
-                            document.getElementById('buscaForm').dispatchEvent(new Event('submit'));
-                        }
+                        atualizarExtratoBusca(idConta); // Atualizar extrato sem fechar
+                        atualizarSaldoNaBusca(idConta); // Atualizar saldo na busca
                     } else {
                         const error = await response.text();
                         alert(error);
@@ -619,13 +614,8 @@
                     
                     if (response.ok) {
                         showMessage('Saque realizado com sucesso!', 'success');
-                        listarContas();
-                        gerarExtratoBusca(idConta, document.getElementById(`extrato-busca-${idConta}`)); // Atualizar extrato
-                        // Refazer busca se houver termo
-                        const termoBusca = document.getElementById('busca').value.trim();
-                        if (termoBusca) {
-                            document.getElementById('buscaForm').dispatchEvent(new Event('submit'));
-                        }
+                        atualizarExtratoBusca(idConta); // Atualizar extrato sem fechar
+                        atualizarSaldoNaBusca(idConta); // Atualizar saldo na busca
                     } else {
                         const error = await response.text();
                         alert(error);
@@ -635,6 +625,22 @@
                 }
             } else if (valor !== null) {
                 alert('Valor inválido para saque');
+            }
+        }
+        
+        // Função para atualizar saldo na busca
+        async function atualizarSaldoNaBusca(idConta) {
+            try {
+                const response = await fetch(`${API_BASE}/${idConta}`);
+                const conta = await response.json();
+                
+                // Atualizar saldo na busca
+                const saldoElement = document.querySelector(`#resultadoBusca .conta-item:has(button[onclick*="verExtratoBusca(${idConta})"]`) .querySelector('.conta-saldo');
+                if (saldoElement) {
+                    saldoElement.textContent = `💰 R$ ${conta.saldo.toFixed(2)}`;
+                }
+            } catch (error) {
+                console.error('Erro ao atualizar saldo na busca:', error);
             }
         }
         
@@ -927,6 +933,65 @@
             document.getElementById(`extrato-${idConta}`).style.display = 'none';
         }
         
+        // Função para atualizar extrato sem fechar
+        async function atualizarExtrato(idConta) {
+            const extratoDiv = document.getElementById(`extrato-${idConta}`);
+            if (extratoDiv && extratoDiv.style.display === 'block') {
+                try {
+                    // Buscar dados da conta para mostrar saldo atual
+                    const contaResponse = await fetch(`${API_BASE}/${idConta}`);
+                    const conta = await contaResponse.json();
+                    
+                    const response = await fetch(`${API_BASE}/${idConta}/extrato`);
+                    const movimentacoes = await response.json();
+                    
+                    extratoDiv.innerHTML = `
+                        <div class="extrato-header">
+                            <h3>📋 Extrato da Conta</h3>
+                            <button class="btn btn-danger" onclick="fecharExtrato(${idConta})">❌ Fechar</button>
+                        </div>
+                        <div class="operacoes-buttons">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <div>
+                                    <button class="btn btn-success" onclick="realizarDeposito(${idConta})">💰 Depósito</button>
+                                    <button class="btn btn-warning" onclick="realizarSaque(${idConta})">💵 Saque</button>
+                                </div>
+                                <div style="font-size: 18px; font-weight: bold; color: #27ae60;">
+                                    💰 Saldo Atual: R$ ${conta.saldo.toFixed(2)}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="movimentacoes-lista">
+                            ${movimentacoes.length === 0 ? 
+                                '<p>Nenhuma movimentação encontrada</p>' : 
+                                movimentacoes.map(mov => `
+                                    <div class="movimentacao-item ${mov.tipo.toLowerCase()}">
+                                        <div>
+                                            <strong>${mov.tipo}</strong><br>
+                                            <small>${new Date(mov.dataMovimentacao).toLocaleString('pt-BR')}</small>
+                                        </div>
+                                        <div class="movimentacao-valor ${mov.tipo.toLowerCase()}">
+                                            ${mov.tipo === 'DEPOSITO' ? '+' : '-'} R$ ${mov.valor.toFixed(2)}
+                                        </div>
+                                    </div>
+                                `).join('')
+                            }
+                        </div>
+                    `;
+                } catch (error) {
+                    showMessage('Erro ao atualizar extrato: ' + error.message, 'error');
+                }
+            }
+        }
+        
+        // Função para atualizar extrato da busca sem fechar
+        async function atualizarExtratoBusca(idConta) {
+            const extratoDiv = document.getElementById(`extrato-busca-${idConta}`);
+            if (extratoDiv && extratoDiv.style.display === 'block') {
+                await gerarExtratoBusca(idConta, extratoDiv);
+            }
+        }
+        
         // Função para realizar depósito
         async function realizarDeposito(idConta) {
             const valor = prompt('Valor do depósito:');
@@ -940,11 +1005,11 @@
                     
                     if (response.ok) {
                         showMessage('Depósito realizado com sucesso!', 'success');
-                        listarContas();
-                        verExtrato(idConta); // Atualizar extrato
+                        atualizarExtrato(idConta); // Atualizar extrato sem fechar
+                        atualizarSaldoNaLista(idConta); // Atualizar apenas o saldo na lista
                     } else {
                         const error = await response.text();
-                        alert(error); // Mostra erro no popup
+                        alert(error);
                     }
                 } catch (error) {
                     alert('Erro no depósito: ' + error.message);
@@ -967,17 +1032,33 @@
                     
                     if (response.ok) {
                         showMessage('Saque realizado com sucesso!', 'success');
-                        listarContas();
-                        verExtrato(idConta); // Atualizar extrato
+                        atualizarExtrato(idConta); // Atualizar extrato sem fechar
+                        atualizarSaldoNaLista(idConta); // Atualizar apenas o saldo na lista
                     } else {
                         const error = await response.text();
-                        alert(error); // Mostra erro no popup
+                        alert(error);
                     }
                 } catch (error) {
                     alert('Erro no saque: ' + error.message);
                 }
             } else if (valor !== null) {
                 alert('Valor inválido para saque');
+            }
+        }
+        
+        // Função para atualizar apenas o saldo na lista sem recriar HTML
+        async function atualizarSaldoNaLista(idConta) {
+            try {
+                const response = await fetch(`${API_BASE}/${idConta}`);
+                const conta = await response.json();
+                
+                // Atualizar saldo na lista principal
+                const saldoElement = document.querySelector(`#contasList .conta-item:has(button[onclick*="verExtrato(${idConta})"]`) .querySelector('.conta-saldo');
+                if (saldoElement) {
+                    saldoElement.textContent = `💰 R$ ${conta.saldo.toFixed(2)}`;
+                }
+            } catch (error) {
+                console.error('Erro ao atualizar saldo:', error);
             }
         }
         

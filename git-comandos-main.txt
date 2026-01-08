@@ -1,0 +1,15 @@
+# ========================================
+# PASSO 1: ATUALIZAR BRANCH MAIN
+# ========================================
+
+# 1. Verificar status atual
+git status
+
+# 2. Adicionar arquivos modificados (.gitignore)
+git add .gitignore
+
+# 3. Fazer commit das alterações
+git commit -m "feat: adiciona .env ao .gitignore para proteger configurações sensíveis"
+
+# 4. Enviar para repositório remoto
+git push origin main
