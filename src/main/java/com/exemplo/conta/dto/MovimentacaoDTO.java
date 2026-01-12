@@ -9,7 +9,6 @@ import jakarta.validation.constraints.Positive;
  */
 public class MovimentacaoDTO {
 
-    @NotBlank(message = "Tipo é obrigatório (SAQUE ou DEPOSITO)")
     private String tipo;
 
     @NotNull(message = "Valor é obrigatório")
@@ -42,7 +41,7 @@ public class MovimentacaoDTO {
         this.valor = valor;
     }
 
-    @Override
+    @Override  //serve para imprimir os dados do objeto de forma legível
     public String toString() {
         return "MovimentacaoDTO{" +
                 "tipo='" + tipo + '\'' +

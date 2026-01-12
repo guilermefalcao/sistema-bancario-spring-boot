@@ -56,7 +56,7 @@ public class ContaCompletaDTO {
         this.saldo = saldo;
     }
 
-    @Override
+    @Override  //serve para imprimir os dados do objeto de forma legível
     public String toString() {
         return "ContaCompletaDTO{" +
                 "nome='" + nome + '\'' +

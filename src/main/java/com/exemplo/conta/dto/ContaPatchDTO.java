@@ -12,3 +12,5 @@ public class ContaPatchDTO {
     public void setSaldo(Double saldo) { this.saldo = saldo; }
 }
 
+
+//este dto serve para atualizações parciais da conta
