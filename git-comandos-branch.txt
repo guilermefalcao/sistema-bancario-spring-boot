@@ -1,0 +1,21 @@
+# ========================================
+# PASSO 2: CRIAR BRANCH DESENVOLVIMENTOTESTE
+# ========================================
+
+# 1. Criar e mudar para nova branch
+git checkout -b desenvolvimentoTeste
+
+# 2. Verificar se está na branch correta
+git branch
+
+# 3. Adicionar arquivo .env (se necessário)
+git add .env
+
+# 4. Fazer commit inicial da branch
+git commit -m "feat: adiciona arquivo .env com configurações de desenvolvimento"
+
+# 5. Enviar nova branch para repositório remoto
+git push -u origin desenvolvimentoTeste
+
+# 6. Verificar branches remotas
+git branch -a

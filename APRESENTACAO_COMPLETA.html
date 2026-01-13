@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Contas Bancárias - Spring Boot + Oracle</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+        h2 { color: #34495e; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; }
+        h3 { color: #7f8c8d; }
+        .highlight { background-color: #f39c12; color: white; padding: 2px 6px; border-radius: 3px; }
+        .success { background-color: #27ae60; color: white; padding: 2px 6px; border-radius: 3px; }
+        .info { background-color: #3498db; color: white; padding: 2px 6px; border-radius: 3px; }
+        .code { background-color: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 5px; font-family: 'Courier New', monospace; overflow-x: auto; }
+        .table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        .table th, .table td { border: 1px solid #bdc3c7; padding: 12px; text-align: left; }
+        .table th { background-color: #34495e; color: white; }
+        .section { margin: 30px 0; padding: 20px; border-left: 4px solid #3498db; background-color: #f8f9fa; }
+    </style>
+</head>
+<body>
+
+<h1>🏦 SISTEMA DE CONTAS BANCÁRIAS</h1>
+<h2>Projeto Spring Boot + Oracle Database</h2>
+
+<div class="section">
+<p><strong>Desenvolvido por:</strong> Guilherme<br>
+<strong>Empresa:</strong> Dataprev<br>
+<strong>Data:</strong> Janeiro 2026<br>
+<strong>Versão:</strong> 1.0.0</p>
+</div>
+
+<h2>📋 ÍNDICE</h2>
+<ol>
+    <li><a href="#visao-geral">Visão Geral do Sistema</a></li>
+    <li><a href="#spring-boot">O que é Spring Boot?</a></li>
+    <li><a href="#arquitetura">Arquitetura do Projeto</a></li>
+    <li><a href="#estrutura">Estrutura de Arquivos</a></li>
+    <li><a href="#oracle">Conexão com Oracle</a></li>
+    <li><a href="#arquivos-java">Arquivos Java Explicados</a></li>
+    <li><a href="#funcionalidades">Funcionalidades do Sistema</a></li>
+    <li><a href="#execucao">Como Executar</a></li>
+    <li><a href="#testes">Testes da API</a></li>
+    <li><a href="#conclusao">Conclusão</a></li>
+</ol>
+
+<h2 id="visao-geral">🎯 1. VISÃO GERAL DO SISTEMA</h2>
+
+<h3>O que o Sistema Faz?</h3>
+<p>O <strong>Sistema de Contas Bancárias</strong> é uma aplicação web completa que permite:</p>
+
+<ul>
+    <li><span class="success">✅</span> <strong>Cadastrar clientes</strong> com nome e CPF</li>
+    <li><span class="success">✅</span> <strong>Criar contas bancárias</strong> com saldo inicial</li>
+    <li><span class="success">✅</span> <strong>Listar todas as contas</strong> cadastradas</li>
+    <li><span class="success">✅</span> <strong>Editar informações</strong> de clientes e saldos</li>
+    <li><span class="success">✅</span> <strong>Excluir contas</strong> e clientes</li>
+    <li><span class="success">✅</span> <strong>Interface web moderna</strong> para interação</li>
+    <li><span class="success">✅</span> <strong>API REST completa</strong> para integração</li>
+</ul>
+
+<h3>Tecnologias Utilizadas</h3>
+<ul>
+    <li><strong>Backend:</strong> Spring Boot 3.3.8 + Java 17</li>
+    <li><strong>Banco de Dados:</strong> Oracle Database</li>
+    <li><strong>Frontend:</strong> HTML5 + CSS3 + JavaScript</li>
+    <li><strong>Build:</strong> Maven</li>
+    <li><strong>ORM:</strong> Hibernate/JPA</li>
+</ul>
+
+<h2 id="spring-boot">🚀 2. O QUE É SPRING BOOT?</h2>
+
+<h3>Definição</h3>
+<p><strong>Spring Boot</strong> é um framework Java que simplifica drasticamente o desenvolvimento de aplicações empresariais, fornecendo:</p>
+
+<h3>Principais Características</h3>
+
+<div class="section">
+<h4>🔧 Configuração Automática</h4>
+<ul>
+    <li>Configura automaticamente componentes baseado nas dependências</li>
+    <li>Elimina a necessidade de XML complexos</li>
+    <li>"Convention over Configuration"</li>
+</ul>
+
+<h4>🏗️ Servidor Embutido</h4>
+<ul>
+    <li>Tomcat integrado (porta 8080)</li>
+    <li>Não precisa instalar servidor separado</li>
+    <li>Deploy simplificado</li>
+</ul>
+
+<h4>📦 Gerenciamento de Dependências</h4>
+<ul>
+    <li>Starters pré-configurados</li>
+    <li>Versionamento automático</li>
+    <li>Resolução de conflitos</li>
+</ul>
+</div>
+
+<h3>O que o Spring Boot faz nesta aplicação?</h3>
+<ol>
+    <li><strong>Inicia servidor web</strong> automaticamente na porta 8080</li>
+    <li><strong>Conecta ao Oracle</strong> usando as configurações do application.properties</li>
+    <li><strong>Cria tabelas</strong> automaticamente via JPA/Hibernate</li>
+    <li><strong>Gerencia transações</strong> de banco de dados</li>
+    <li><strong>Expõe API REST</strong> através dos Controllers</li>
+    <li><strong>Valida dados</strong> automaticamente com Bean Validation</li>
+    <li><strong>Trata exceções</strong> globalmente</li>
+    <li><strong>Serve arquivos estáticos</strong> (HTML, CSS, JS)</li>
+</ol>
+
+<h2 id="arquitetura">🏗️ 3. ARQUITETURA DO PROJETO</h2>
+
+<h3>Padrão MVC + Camadas</h3>
+<div class="code">
+📱 FRONTEND (HTML/JS)
+    ↓ HTTP Requests
+🌐 CONTROLLER (REST API)
+    ↓ Chama métodos
+⚙️ SERVICE (Regras de Negócio)
+    ↓ Acessa dados
+💾 REPOSITORY (Acesso ao Banco)
+    ↓ Mapeia tabelas
+🗃️ ENTITY (Modelo de Dados)
+    ↓ Persiste em
+🏛️ ORACLE DATABASE
+</div>
+
+<h3>Fluxo de uma Requisição</h3>
+<ol>
+    <li><strong>Frontend</strong> envia POST /contas com JSON</li>
+    <li><strong>ContaController</strong> recebe e valida dados</li>
+    <li><strong>ContaService</strong> aplica regras de negócio</li>
+    <li><strong>ClienteRepository</strong> salva cliente no Oracle</li>
+    <li><strong>ContaRepository</strong> salva conta no Oracle</li>
+    <li><strong>Resposta JSON</strong> retorna para o frontend</li>
+</ol>
+
+<h2 id="estrutura">📁 4. ESTRUTURA DE ARQUIVOS</h2>
+
+<div class="code">
+backend-conta/
+├── 📄 pom.xml                          # Dependências Maven
+├── 📄 README.md                        # Documentação
+├── 📄 application.properties           # Configurações
+├── 📄 *.sql                           # Scripts Oracle
+├── 📄 *.bat, *.ps1, *.sh             # Scripts de teste
+│
+├── 📂 src/main/java/com/exemplo/conta/
+│   ├── 📄 BackendContaApplication.java # 🚀 CLASSE PRINCIPAL
+│   ├── 📄 TesteInicializacao.java     # Teste de inicialização
+│   │
+│   ├── 📂 config/
+│   │   └── 📄 CorsConfig.java         # Configuração CORS
+│   │
+│   ├── 📂 controller/                  # 🌐 CAMADA WEB
+│   │   ├── 📄 ContaController.java    # Endpoints REST
+│   │   └── 📄 GlobalExceptionHandler.java # Tratamento de erros
+│   │
+│   ├── 📂 dto/                        # 📦 TRANSFERÊNCIA DE DADOS
+│   │   ├── 📄 ContaCompletaDTO.java   # DTO para criação
+│   │   └── 📄 ContaPatchDTO.java      # DTO para atualização
+│   │
+│   ├── 📂 entity/                     # 🗃️ MODELO DE DADOS
+│   │   ├── 📄 Cliente.java            # Entidade Cliente
+│   │   └── 📄 Conta.java              # Entidade Conta
+│   │
+│   ├── 📂 repository/                 # 💾 ACESSO AOS DADOS
+│   │   ├── 📄 ClienteRepository.java  # CRUD Cliente
+│   │   └── 📄 ContaRepository.java    # CRUD Conta
+│   │
+│   └── 📂 service/                    # ⚙️ REGRAS DE NEGÓCIO
+│       └── 📄 ContaService.java       # Lógica de negócio
+│
+└── 📂 src/main/resources/
+    ├── 📄 application.properties       # Configurações Spring
+    ├── 📄 schema.sql                  # Script de criação
+    └── 📂 static/
+        └── 📄 index.html              # Interface web
+</div>
+
+<h2 id="oracle">🔗 5. CONEXÃO COM ORACLE</h2>
+
+<h3>Arquivo: application.properties</h3>
+<div class="code">
+# Configuração da conexão Oracle
+spring.datasource.url=jdbc:oracle:thin:@localhost:1521/XEPDB1
+spring.datasource.username=CONTA_APP
+spring.datasource.password=1234
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+
+# Configuração JPA/Hibernate
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+# Pool de conexões
+spring.datasource.hikari.maximum-pool-size=10
+spring.datasource.hikari.minimum-idle=2
+</div>
+
+<h3>Como o Spring Boot Conecta?</h3>
+<ol>
+    <li><strong>Lê as configurações</strong> do application.properties</li>
+    <li><strong>Carrega o driver Oracle</strong> automaticamente</li>
+    <li><strong>Cria pool de conexões</strong> Hikari</li>
+    <li><strong>Configura Hibernate</strong> para Oracle</li>
+    <li><strong>Mapeia entidades</strong> para tabelas</li>
+    <li><strong>Gerencia transações</strong> automaticamente</li>
+</ol>
+
+<h2 id="arquivos-java">☕ 6. ARQUIVOS JAVA EXPLICADOS</h2>
+
+<h3>🚀 BackendContaApplication.java - CLASSE PRINCIPAL</h3>
+<div class="code">
+@SpringBootApplication  // ← Anotação mágica do Spring Boot
+public class BackendContaApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(BackendContaApplication.class, args);
+    }
+}
+</div>
+
+<p><strong>O que faz:</strong></p>
+<ul>
+    <li><strong>@SpringBootApplication</strong> = @Configuration + @EnableAutoConfiguration + @ComponentScan</li>
+    <li><strong>Inicia o servidor Tomcat</strong> na porta 8080</li>
+    <li><strong>Escaneia componentes</strong> automaticamente</li>
+    <li><strong>Configura Spring Context</strong> com todos os beans</li>
+</ul>
+
+<h3>🗃️ Cliente.java - ENTIDADE JPA</h3>
+<div class="code">
+@Entity                    // ← Marca como entidade JPA
+@Table(name = "CLIENTE")   // ← Mapeia para tabela CLIENTE
+public class Cliente {
+    
+    @Id                    // ← Chave primária
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)  // ← Auto incremento
+    @SequenceGenerator(name = "cliente_seq", sequenceName = "SEQ_CLIENTE")
+    private Long id;
+    
+    @Column(name = "NOME", nullable = false)  // ← Mapeia coluna
+    @NotBlank(message = "Nome é obrigatório") // ← Validação
+    private String nome;
+    
+    @Column(name = "CPF", length = 11)
+    @Size(min = 11, max = 11)  // ← Validação de tamanho
+    private String cpf;
+}
+</div>
+
+<p><strong>Anotações Explicadas:</strong></p>
+<ul>
+    <li><strong>@Entity:</strong> Informa ao Hibernate que é uma tabela</li>
+    <li><strong>@Table:</strong> Define nome da tabela no banco</li>
+    <li><strong>@Id:</strong> Marca campo como chave primária</li>
+    <li><strong>@GeneratedValue:</strong> Auto incremento usando sequência Oracle</li>
+    <li><strong>@Column:</strong> Mapeia campo para coluna específica</li>
+    <li><strong>@NotBlank/@Size:</strong> Validações automáticas</li>
+</ul>
+
+<h3>💾 ContaRepository.java - ACESSO AOS DADOS</h3>
+<div class="code">
+@Repository  // ← Marca como componente de acesso a dados
+public interface ContaRepository extends JpaRepository&lt;Conta, Long&gt; {
+    // JpaRepository fornece métodos prontos:
+    // - findAll() → SELECT * FROM CONTA
+    // - findById(id) → SELECT * FROM CONTA WHERE ID = ?
+    // - save(conta) → INSERT ou UPDATE
+    // - deleteById(id) → DELETE FROM CONTA WHERE ID = ?
+    // - existsById(id) → SELECT COUNT(*) FROM CONTA WHERE ID = ?
+}
+</div>
+
+<p><strong>O que o Spring Data JPA faz:</strong></p>
+<ul>
+    <li><strong>Implementa automaticamente</strong> todos os métodos CRUD</li>
+    <li><strong>Gera SQL</strong> baseado no nome dos métodos</li>
+    <li><strong>Gerencia transações</strong> automaticamente</li>
+    <li><strong>Trata exceções</strong> de banco de dados</li>
+</ul>
+
+<h3>⚙️ ContaService.java - REGRAS DE NEGÓCIO</h3>
+<div class="code">
+@Service  // ← Marca como componente de serviço
+@Transactional  // ← Gerenciamento automático de transações
+public class ContaService {
+    
+    private final ContaRepository contaRepository;
+    private final ClienteRepository clienteRepository;
+    
+    // Injeção de dependência via construtor
+    public ContaService(ContaRepository contaRepository, 
+                       ClienteRepository clienteRepository) {
+        this.contaRepository = contaRepository;
+        this.clienteRepository = clienteRepository;
+    }
+    
+    public Conta criarContaCompleta(ContaCompletaDTO dto) {
+        // 1. Validar CPF único
+        if (clienteRepository.existsByCpf(dto.getCpf())) {
+            throw new RuntimeException("CPF já cadastrado");
+        }
+        
+        // 2. Criar cliente
+        Cliente cliente = new Cliente(dto.getNome(), dto.getCpf());
+        cliente = clienteRepository.save(cliente);
+        
+        // 3. Criar conta
+        Conta conta = new Conta();
+        conta.setIdCliente(cliente.getId());
+        conta.setSaldo(dto.getSaldo());
+        
+        return contaRepository.save(conta);
+    }
+}
+</div>
+
+<p><strong>Responsabilidades do Service:</strong></p>
+<ul>
+    <li><strong>Regras de negócio:</strong> Validações, cálculos, lógica</li>
+    <li><strong>Coordenação:</strong> Orquestra chamadas aos repositories</li>
+    <li><strong>Transações:</strong> Garante consistência dos dados</li>
+    <li><strong>Tratamento:</strong> Converte exceções técnicas em de negócio</li>
+</ul>
+
+<h3>🌐 ContaController.java - API REST</h3>
+<div class="code">
+@RestController  // ← Marca como controller REST
+@RequestMapping("/contas")  // ← Base URL: /contas
+@CrossOrigin(origins = "*")  // ← Permite CORS
+public class ContaController {
+    
+    private final ContaService contaService;
+    
+    @GetMapping  // ← GET /contas
+    public List&lt;Conta&gt; listar() {
+        return contaService.listar();
+    }
+    
+    @PostMapping  // ← POST /contas
+    public ResponseEntity&lt;Conta&gt; criar(@Valid @RequestBody ContaCompletaDTO dto) {
+        Conta conta = contaService.criarContaCompleta(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(conta);
+    }
+    
+    @PutMapping("/{id}")  // ← PUT /contas/1
+    public Conta atualizar(@PathVariable Long id, 
+                          @Valid @RequestBody Conta conta) {
+        return contaService.atualizar(id, conta);
+    }
+    
+    @DeleteMapping("/{id}")  // ← DELETE /contas/1
+    public ResponseEntity&lt;Void&gt; excluir(@PathVariable Long id) {
+        contaService.excluir(id);
+        return ResponseEntity.noContent().build();
+    }
+}
+</div>
+
+<p><strong>Anotações do Controller:</strong></p>
+<ul>
+    <li><strong>@RestController:</strong> Combina @Controller + @ResponseBody</li>
+    <li><strong>@RequestMapping:</strong> Define URL base para todos os métodos</li>
+    <li><strong>@GetMapping/@PostMapping:</strong> Mapeia métodos HTTP específicos</li>
+    <li><strong>@PathVariable:</strong> Extrai variáveis da URL (/contas/{id})</li>
+    <li><strong>@RequestBody:</strong> Converte JSON em objeto Java</li>
+    <li><strong>@Valid:</strong> Executa validações automáticas</li>
+</ul>
+
+<h2 id="funcionalidades">🎯 7. FUNCIONALIDADES DO SISTEMA</h2>
+
+<h3>Interface Web (index.html)</h3>
+<p><strong>Localização:</strong> <code>src/main/resources/static/index.html</code></p>
+
+<p><strong>Funcionalidades:</strong></p>
+<ul>
+    <li><span class="success">✅</span> <strong>Formulário de cadastro</strong> com nome, CPF e saldo</li>
+    <li><span class="success">✅</span> <strong>Lista dinâmica</strong> de contas cadastradas</li>
+    <li><span class="success">✅</span> <strong>Edição inline</strong> com prompts JavaScript</li>
+    <li><span class="success">✅</span> <strong>Exclusão</strong> com confirmação</li>
+    <li><span class="success">✅</span> <strong>Atualização automática</strong> da lista</li>
+    <li><span class="success">✅</span> <strong>Validação</strong> de CPF (11 dígitos)</li>
+    <li><span class="success">✅</span> <strong>Design responsivo</strong> com CSS moderno</li>
+</ul>
+
+<h3>API REST Completa</h3>
+<table class="table">
+    <tr>
+        <th>Método</th>
+        <th>Endpoint</th>
+        <th>Função</th>
+        <th>Exemplo</th>
+    </tr>
+    <tr>
+        <td><span class="info">GET</span></td>
+        <td>/contas</td>
+        <td>Lista todas as contas</td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td><span class="info">GET</span></td>
+        <td>/contas/{id}</td>
+        <td>Busca conta por ID</td>
+        <td>/contas/1</td>
+    </tr>
+    <tr>
+        <td><span class="success">POST</span></td>
+        <td>/contas</td>
+        <td>Cria nova conta+cliente</td>
+        <td>JSON com nome, CPF, saldo</td>
+    </tr>
+    <tr>
+        <td><span class="highlight">PUT</span></td>
+        <td>/contas/{id}</td>
+        <td>Atualiza conta completa</td>
+        <td>JSON com titular, saldo</td>
+    </tr>
+    <tr>
+        <td><span class="highlight">PATCH</span></td>
+        <td>/contas/{id}</td>
+        <td>Atualiza parcialmente</td>
+        <td>JSON só com saldo</td>
+    </tr>
+    <tr>
+        <td style="background-color: #e74c3c; color: white;">DELETE</td>
+        <td>/contas/{id}</td>
+        <td>Exclui conta+cliente</td>
+        <td>/contas/1</td>
+    </tr>
+</table>
+
+<h2 id="execucao">🚀 8. COMO EXECUTAR</h2>
+
+<h3>Pré-requisitos</h3>
+<ul>
+    <li><span class="success">✅</span> <strong>Java 17</strong> ou superior</li>
+    <li><span class="success">✅</span> <strong>Maven 3.6+</strong></li>
+    <li><span class="success">✅</span> <strong>Oracle Database</strong> rodando</li>
+    <li><span class="success">✅</span> <strong>Usuário CONTA_APP</strong> criado no Oracle</li>
+</ul>
+
+<h3>Passo a Passo</h3>
+
+<h4>1. Configurar Oracle</h4>
+<div class="code">
+-- Criar usuário (se não existir)
+CREATE USER CONTA_APP IDENTIFIED BY 1234;
+GRANT CONNECT, RESOURCE TO CONTA_APP;
+
+-- Executar scripts (como CONTA_APP)
+-- criar-sequencias.sql
+-- povoar-tabelas-oracle.sql (opcional)
+</div>
+
+<h4>2. Executar Aplicação</h4>
+<div class="code">
+# Navegar para pasta do projeto
+cd "c:\1. Guilherme\00. Dataprev\0000. projeto conta\backend-conta"
+
+# Compilar
+mvn clean compile
+
+# Executar
+mvn spring-boot:run
+</div>
+
+<h4>3. Acessar Sistema</h4>
+<ul>
+    <li><strong>Interface Web:</strong> http://localhost:8080</li>
+    <li><strong>API REST:</strong> http://localhost:8080/contas</li>
+    <li><strong>Documentação:</strong> README.md</li>
+</ul>
+
+<h2 id="testes">🧪 9. TESTES DA API</h2>
+
+<h3>Scripts de Teste Incluídos</h3>
+<ul>
+    <li>📄 <strong>testar-api.bat</strong> - Windows Batch</li>
+    <li>📄 <strong>testar-api.ps1</strong> - PowerShell</li>
+    <li>📄 <strong>testar-completo.sh</strong> - Linux/Mac</li>
+    <li>📄 <strong>comandos-curl.txt</strong> - Comandos manuais</li>
+</ul>
+
+<h3>Exemplos de Teste Manual</h3>
+<div class="code">
+# Remover alias do curl (PowerShell)
+Remove-Item alias:curl -ErrorAction SilentlyContinue
+
+# 1. Listar contas
+curl -X GET http://localhost:8080/contas
+
+# 2. Criar conta
+curl -X POST http://localhost:8080/contas \
+  -H 'Content-Type: application/json' \
+  -d '{"nome":"João Silva","cpf":"12345678901","saldo":1000.00}'
+
+# 3. Buscar por ID
+curl -X GET http://localhost:8080/contas/1
+
+# 4. Atualizar
+curl -X PUT http://localhost:8080/contas/1 \
+  -H 'Content-Type: application/json' \
+  -d '{"titular":"João Santos","saldo":1500.00}'
+
+# 5. Excluir
+curl -X DELETE http://localhost:8080/contas/1
+</div>
+
+<h2 id="conclusao">🎯 10. CONCLUSÃO</h2>
+
+<h3>O que foi Desenvolvido</h3>
+<ul>
+    <li><span class="success">✅</span> <strong>Sistema completo</strong> de contas bancárias</li>
+    <li><span class="success">✅</span> <strong>API REST robusta</strong> com todos os métodos HTTP</li>
+    <li><span class="success">✅</span> <strong>Interface web moderna</strong> e responsiva</li>
+    <li><span class="success">✅</span> <strong>Integração Oracle</strong> funcionando perfeitamente</li>
+    <li><span class="success">✅</span> <strong>Validações completas</strong> de dados</li>
+    <li><span class="success">✅</span> <strong>Tratamento de erros</strong> profissional</li>
+    <li><span class="success">✅</span> <strong>Documentação detalhada</strong> e scripts de teste</li>
+</ul>
+
+<h3>Tecnologias Dominadas</h3>
+<div class="section">
+<h4>🎓 Spring Boot 3.3.8</h4>
+<ul>
+    <li>Configuração automática</li>
+    <li>Injeção de dependência</li>
+    <li>Servidor embutido</li>
+</ul>
+
+<h4>🎓 Spring Data JPA</h4>
+<ul>
+    <li>Mapeamento objeto-relacional</li>
+    <li>Repositories automáticos</li>
+    <li>Transações gerenciadas</li>
+</ul>
+
+<h4>🎓 Oracle Database</h4>
+<ul>
+    <li>Conexão JDBC</li>
+    <li>Sequências e triggers</li>
+    <li>Relacionamentos entre tabelas</li>
+</ul>
+</div>
+
+<h3>Valor para a Dataprev</h3>
+<div class="section">
+<h4>💼 Aplicação Prática:</h4>
+<ul>
+    <li>Base para sistemas bancários reais</li>
+    <li>Padrões de desenvolvimento enterprise</li>
+    <li>Integração com Oracle (usado na Dataprev)</li>
+    <li>Arquitetura escalável e manutenível</li>
+</ul>
+</div>
+
+<hr>
+<p><strong>© 2026 - Sistema de Contas Bancárias - Projeto Dataprev</strong><br>
+<strong>Desenvolvido com ❤️ usando Spring Boot + Oracle</strong></p>
+
+</body>
+</html>
