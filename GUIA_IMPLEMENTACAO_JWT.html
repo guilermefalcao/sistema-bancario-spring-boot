@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia Completo - Implementação JWT Authentication</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .toc {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        .toc h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .toc ul {
+            list-style: none;
+        }
+
+        .toc li {
+            margin: 8px 0;
+        }
+
+        .toc a {
+            color: #333;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            transition: background 0.3s;
+        }
+
+        .toc a:hover {
+            background: #e9ecef;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 30px;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        h3 {
+            color: #495057;
+            font-size: 1.4em;
+            margin: 25px 0 15px 0;
+        }
+
+        h4 {
+            color: #6c757d;
+            font-size: 1.2em;
+            margin: 20px 0 10px 0;
+        }
+
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .info-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .file-structure {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.3;
+            white-space: pre;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 12px;
+            margin: 2px;
+        }
+
+        .badge-new {
+            background: #28a745;
+            color: white;
+        }
+
+        .badge-existing {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .badge-modify {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .flow-diagram {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.2;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist li {
+            margin: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .checklist li:before {
+            content: "✅";
+            position: absolute;
+            left: 0;
+        }
+
+        .footer {
+            background: #343a40;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 GUIA COMPLETO</h1>
+            <p>Implementação JWT Authentication - Sistema de Contas Bancárias</p>
+        </div>
+
+        <div class="content">
+            <!-- ÍNDICE -->
+            <div class="toc">
+                <h2>📋 ÍNDICE</h2>
+                <ul>
+                    <li><a href="#visao-geral">1. Visão Geral</a></li>
+                    <li><a href="#dependencias">2. Dependências Necessárias</a></li>
+                    <li><a href="#estrutura">3. Estrutura de Arquivos</a></li>
+                    <li><a href="#backend">4. Implementação Backend</a></li>
+                    <li><a href="#frontend">5. Implementação Frontend</a></li>
+                    <li><a href="#database">6. Banco de Dados</a></li>
+                    <li><a href="#fluxo">7. Fluxo de Autenticação</a></li>
+                    <li><a href="#testes">8. Testes e Validação</a></li>
+                </ul>
+            </div>
+
+            <!-- VISÃO GERAL -->
+            <div class="section" id="visao-geral">
+                <h2>🎯 VISÃO GERAL</h2>
+                
+                <h3>Objetivo</h3>
+                <p>Implementar autenticação JWT (JSON Web Token) no sistema de contas bancárias, adicionando:</p>
+                <ul>
+                    <li>Tela de login com usuário/senha</li>
+                    <li>Proteção de rotas com tokens JWT</li>
+                    <li>Criptografia BCrypt para senhas</li>
+                    <li>Interface responsiva e moderna</li>
+                </ul>
+
+                <h3>Tecnologias Utilizadas</h3>
+                <ul>
+                    <li><strong>Spring Security 6</strong> - Framework de segurança</li>
+                    <li><strong>JWT (Auth0)</strong> - Tokens de autenticação</li>
+                    <li><strong>BCrypt</strong> - Criptografia de senhas</li>
+                    <li><strong>Oracle Database</strong> - Persistência de dados</li>
+                    <li><strong>HTML/CSS/JavaScript</strong> - Interface web</li>
+                </ul>
+            </div>
+
+            <!-- DEPENDÊNCIAS -->
+            <div class="section" id="dependencias">
+                <h2>📦 DEPENDÊNCIAS NECESSÁRIAS</h2>
+                
+                <h3>1. Adicionar ao pom.xml</h3>
+                <div class="code-block">
+&lt;!-- Spring Security --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+&lt;!-- JWT Auth0 --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.auth0&lt;/groupId&gt;
+    &lt;artifactId&gt;java-jwt&lt;/artifactId&gt;
+    &lt;version&gt;4.5.0&lt;/version&gt;
+&lt;/dependency&gt;
+                </div>
+
+                <div class="info-box">
+                    <strong>💡 Dica:</strong> Essas são as únicas dependências adicionais necessárias. O Spring Boot já inclui as demais dependências automaticamente.
+                </div>
+            </div>
+
+            <!-- ESTRUTURA -->
+            <div class="section" id="estrutura">
+                <h2>📁 ESTRUTURA DE ARQUIVOS</h2>
+                
+                <h3>Estrutura Completa do Projeto</h3>
+                <div class="file-structure">backend-conta_AutenticacaoJWT/
+├── src/main/java/com/exemplo/conta/
+│   ├── controller/
+│   │   ├── ContaController.java          <span class="badge badge-existing">Existente</span>
+│   │   └── AutenticacaoController.java   <span class="badge badge-new">Novo</span>
+│   │
+│   ├── domain/
+│   │   ├── conta/                        <span class="badge badge-modify">Reorganizar</span>
+│   │   │   ├── Cliente.java
+│   │   │   ├── Conta.java
+│   │   │   └── Movimentacao.java
+│   │   │
+│   │   └── usuario/                      <span class="badge badge-new">Novo pacote</span>
+│   │       ├── Usuario.java
+│   │       ├── UsuarioRepository.java
+│   │       ├── AutenticacaoService.java
+│   │       └── DadosAutenticacao.java
+│   │
+│   ├── infra/
+│   │   ├── security/                     <span class="badge badge-new">Novo pacote</span>
+│   │   │   ├── SecurityConfigurations.java
+│   │   │   ├── SecurityFilter.java
+│   │   │   ├── TokenService.java
+│   │   │   └── DadosTokenJWT.java
+│   │   │
+│   │   └── exception/
+│   │       └── GlobalExceptionHandler.java <span class="badge badge-existing">Existente</span>
+│   │
+│   └── BackendContaApplication.java      <span class="badge badge-existing">Existente</span>
+│
+├── src/main/resources/
+│   ├── db/migration/
+│   │   ├── V1__create-tables.sql         <span class="badge badge-existing">Existente</span>
+│   │   ├── V2__popular-dados.sql         <span class="badge badge-existing">Existente</span>
+│   │   ├── V3__create-table-usuarios.sql <span class="badge badge-new">Novo</span>
+│   │   └── V4__popular-usuarios.sql      <span class="badge badge-new">Novo</span>
+│   │
+│   ├── static/
+│   │   ├── login.html                    <span class="badge badge-new">Novo</span>
+│   │   ├── index.html                    <span class="badge badge-modify">Modificar</span>
+│   │   ├── login.css                     <span class="badge badge-new">Novo</span>
+│   │   └── auth.js                       <span class="badge badge-new">Novo</span>
+│   │
+│   └── application.properties            <span class="badge badge-modify">Modificar</span>
+</div>
+            </div>
+
+            <!-- BACKEND -->
+            <div class="section" id="backend">
+                <h2>🔧 IMPLEMENTAÇÃO BACKEND</h2>
+                
+                <h3>1. Configuração de Segurança</h3>
+                
+                <h4>SecurityConfigurations.java</h4>
+                <div class="code-block">
+package com.exemplo.conta.infra.security;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+/**
+ * Configuração principal do Spring Security
+ * Define as regras de autenticação e autorização da aplicação
+ */
+@Configuration
+@EnableWebSecurity
+public class SecurityConfigurations {
+
+    @Autowired
+    private SecurityFilter securityFilter;
+
+    /**
+     * Configura a cadeia de filtros de segurança
+     * Define quais rotas são públicas e quais precisam de autenticação
+     */
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                // Desabilita CSRF pois usaremos JWT (stateless)
+                .csrf(csrf -> csrf.disable())
+                
+                // Configura sessão como STATELESS para JWT
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                
+                // Define regras de autorização
+                .authorizeHttpRequests(req -> {
+                    // Rotas públicas (não precisam de autenticação)
+                    req.requestMatchers(HttpMethod.POST, "/login").permitAll();
+                    req.requestMatchers("/login.html", "/login.css", "/auth.js").permitAll();
+                    
+                    // Todas as outras rotas precisam de autenticação
+                    req.anyRequest().authenticated();
+                })
+                
+                // Adiciona nosso filtro JWT antes do filtro padrão
+                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
+
+    /**
+     * Bean do AuthenticationManager para autenticação
+     */
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+
+    /**
+     * Bean do PasswordEncoder para criptografar senhas
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}
+                </div>
+
+                <h4>TokenService.java</h4>
+                <div class="code-block">
+package com.exemplo.conta.infra.security;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+
+import com.exemplo.conta.domain.usuario.Usuario;
+
+/**
+ * Serviço responsável pela geração e validação de tokens JWT
+ */
+@Service
+public class TokenService {
+
+    // Chave secreta para assinar tokens (deve vir do application.properties)
+    @Value("${api.security.token.secret}")
+    private String secret;
+
+    /**
+     * Gera um token JWT para o usuário autenticado
+     * @param usuario - Usuário para o qual será gerado o token
+     * @return String - Token JWT assinado
+     */
+    public String gerarToken(Usuario usuario) {
+        try {
+            var algoritmo = Algorithm.HMAC256(secret);
+            
+            return JWT.create()
+                .withIssuer("API Conta Bancária")        // Emissor do token
+                .withSubject(usuario.getLogin())         // Usuário (subject)
+                .withExpiresAt(dataExpiracao())          // Data de expiração
+                .sign(algoritmo);                        // Assina com o algoritmo
+                
+        } catch (JWTCreationException exception) {
+            throw new RuntimeException("Erro ao gerar token JWT", exception);
+        }
+    }
+
+    /**
+     * Valida um token JWT e retorna o subject (login do usuário)
+     * @param tokenJWT - Token a ser validado
+     * @return String - Login do usuário se token válido
+     */
+    public String getSubject(String tokenJWT) {
+        try {
+            var algoritmo = Algorithm.HMAC256(secret);
+            
+            return JWT.require(algoritmo)
+                .withIssuer("API Conta Bancária")
+                .build()
+                .verify(tokenJWT)
+                .getSubject();
+                
+        } catch (JWTVerificationException exception) {
+            throw new RuntimeException("Token JWT inválido ou expirado");
+        }
+    }
+
+    /**
+     * Calcula a data de expiração do token (2 horas a partir de agora)
+     */
+    private Instant dataExpiracao() {
+        return LocalDateTime.now()
+            .plusHours(2)
+            .toInstant(ZoneOffset.of("-03:00"));
+    }
+}
+                </div>
+
+                <div class="highlight">
+                    <strong>⚠️ Importante:</strong> A chave secreta deve ser configurada no application.properties e nunca deve ser commitada no código.
+                </div>
+            </div>
+
+            <!-- FRONTEND -->
+            <div class="section" id="frontend">
+                <h2>🎨 IMPLEMENTAÇÃO FRONTEND</h2>
+                
+                <h3>1. Tela de Login</h3>
+                
+                <h4>login.html</h4>
+                <div class="code-block">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Login - Sistema Bancário&lt;/title&gt;
+    &lt;link rel="stylesheet" href="login.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="login-container"&gt;
+        &lt;div class="login-card"&gt;
+            &lt;div class="login-header"&gt;
+                &lt;h1&gt;🏦 Sistema Bancário&lt;/h1&gt;
+                &lt;p&gt;Faça login para acessar sua conta&lt;/p&gt;
+            &lt;/div&gt;
+
+            &lt;form id="loginForm" class="login-form"&gt;
+                &lt;div class="form-group"&gt;
+                    &lt;label for="login"&gt;Usuário:&lt;/label&gt;
+                    &lt;input type="text" id="login" name="login" required 
+                           placeholder="Digite seu usuário"&gt;
+                &lt;/div&gt;
+
+                &lt;div class="form-group"&gt;
+                    &lt;label for="senha"&gt;Senha:&lt;/label&gt;
+                    &lt;input type="password" id="senha" name="senha" required 
+                           placeholder="Digite sua senha"&gt;
+                &lt;/div&gt;
+
+                &lt;button type="submit" class="login-btn"&gt;
+                    &lt;span class="btn-text"&gt;Entrar&lt;/span&gt;
+                    &lt;span class="btn-loading" style="display: none;"&gt;Entrando...&lt;/span&gt;
+                &lt;/button&gt;
+            &lt;/form&gt;
+
+            &lt;div id="errorMessage" class="error-message" style="display: none;"&gt;&lt;/div&gt;
+
+            &lt;div class="login-footer"&gt;
+                &lt;p&gt;&lt;strong&gt;Usuários de teste:&lt;/strong&gt;&lt;/p&gt;
+                &lt;p&gt;👤 admin / 123456&lt;/p&gt;
+                &lt;p&gt;👤 usuario / 123456&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;script src="auth.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+                </div>
+
+                <h4>auth.js (Gerenciamento de Autenticação)</h4>
+                <div class="code-block">
+/**
+ * Gerenciamento de autenticação JWT
+ * Funções para login, logout e verificação de token
+ */
+
+// Configurações da API
+const API_BASE_URL = 'http://localhost:8080';
+const TOKEN_KEY = 'jwt_token';
+
+/**
+ * Classe para gerenciar autenticação
+ */
+class AuthManager {
+    
+    /**
+     * Realiza login do usuário
+     */
+    static async login(loginData) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(loginData)
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                
+                // Armazena o token no localStorage
+                localStorage.setItem(TOKEN_KEY, data.token);
+                
+                return { success: true, token: data.token };
+            } else {
+                const errorData = await response.json().catch(() => ({}));
+                return { 
+                    success: false, 
+                    message: errorData.message || 'Credenciais inválidas' 
+                };
+            }
+        } catch (error) {
+            console.error('Erro no login:', error);
+            return { 
+                success: false, 
+                message: 'Erro de conexão. Tente novamente.' 
+            };
+        }
+    }
+
+    /**
+     * Verifica se usuário está autenticado
+     */
+    static isAuthenticated() {
+        const token = localStorage.getItem(TOKEN_KEY);
+        
+        if (!token) {
+            return false;
+        }
+
+        // Verifica se token não está expirado
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const now = Date.now() / 1000;
+            
+            if (payload.exp < now) {
+                // Token expirado
+                localStorage.removeItem(TOKEN_KEY);
+                return false;
+            }
+            
+            return true;
+        } catch (error) {
+            // Token inválido
+            localStorage.removeItem(TOKEN_KEY);
+            return false;
+        }
+    }
+
+    /**
+     * Adiciona token nas requisições
+     */
+    static getAuthHeaders() {
+        const token = this.getToken();
+        return token ? {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        } : {
+            'Content-Type': 'application/json'
+        };
+    }
+}
+
+// Exporta AuthManager para uso global
+window.AuthManager = AuthManager;
+                </div>
+
+                <div class="success-box">
+                    <strong>✅ Funcionalidades Implementadas:</strong>
+                    <ul class="checklist">
+                        <li>Tela de login responsiva</li>
+                        <li>Validação de formulário</li>
+                        <li>Gerenciamento de token JWT</li>
+                        <li>Verificação de expiração</li>
+                        <li>Redirecionamento automático</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- DATABASE -->
+            <div class="section" id="database">
+                <h2>🗄️ BANCO DE DADOS</h2>
+                
+                <h3>1. Migration para Tabela de Usuários</h3>
+                
+                <h4>V3__create-table-usuarios.sql</h4>
+                <div class="code-block">
+-- Criação da tabela de usuários para autenticação
+CREATE TABLE usuarios (
+    id NUMBER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    login VARCHAR2(100) NOT NULL UNIQUE,
+    senha VARCHAR2(255) NOT NULL
+);
+
+-- Comentários para documentação
+COMMENT ON TABLE usuarios IS 'Tabela de usuários do sistema';
+COMMENT ON COLUMN usuarios.id IS 'Identificador único do usuário';
+COMMENT ON COLUMN usuarios.login IS 'Nome de usuário para login';
+COMMENT ON COLUMN usuarios.senha IS 'Senha criptografada com BCrypt';
+                </div>
+
+                <h4>V4__popular-usuarios.sql</h4>
+                <div class="code-block">
+-- Inserção de usuários padrão do sistema
+-- Senha: 123456 (criptografada com BCrypt)
+
+INSERT INTO usuarios (login, senha) VALUES 
+('admin', '$2a$10$Y50UaMFOxteibQEYLrwuHeehHYfcoafCopUazP12.rqB41bsolF5.');
+
+INSERT INTO usuarios (login, senha) VALUES 
+('usuario', '$2a$10$Y50UaMFOxteibQEYLrwuHeehHYfcoafCopUazP12.rqB41bsolF5.');
+
+-- Commit das inserções
+COMMIT;
+                </div>
+
+                <h3>2. Configuração do application.properties</h3>
+                <div class="code-block">
+# Configuração do Banco Oracle
+spring.datasource.url=jdbc:oracle:thin:@localhost:1521/XEPDB1
+spring.datasource.username=CONTA_APP
+spring.datasource.password=1234
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+
+# JPA/Hibernate
+spring.jpa.hibernate.ddl-auto=validate
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+# Flyway
+spring.flyway.locations=classpath:db/migration
+
+# JWT Secret (alterar em produção)
+api.security.token.secret=minha-chave-secreta-jwt-2024
+
+# Server
+server.port=8080
+
+# CORS (se necessário)
+spring.web.cors.allowed-origins=http://localhost:8080
+                </div>
+            </div>
+
+            <!-- FLUXO -->
+            <div class="section" id="fluxo">
+                <h2>🔄 FLUXO DE AUTENTICAÇÃO</h2>
+                
+                <h3>Fluxo Completo</h3>
+                <div class="flow-diagram">
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   1. Usuário    │    │   2. Backend    │    │   3. Database   │
+│   (Frontend)    │    │  (Spring Boot)  │    │    (Oracle)     │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         │ POST /login           │                       │
+         │ {login, senha}        │                       │
+         ├──────────────────────►│                       │
+         │                       │ SELECT * FROM usuarios│
+         │                       │ WHERE login = ?       │
+         │                       ├──────────────────────►│
+         │                       │                       │
+         │                       │ ◄─────────────────────┤
+         │                       │ Usuario encontrado    │
+         │                       │                       │
+         │                       │ BCrypt.matches()      │
+         │                       │ (valida senha)        │
+         │                       │                       │
+         │ 200 OK                │ JWT.create()          │
+         │ {token: "eyJ..."}     │ (gera token)          │
+         │ ◄─────────────────────┤                       │
+         │                       │                       │
+         │ localStorage.setItem  │                       │
+         │ ("jwt_token", token)  │                       │
+         │                       │                       │
+         │ Redirect to /         │                       │
+         │                       │                       │
+         │ GET /contas           │                       │
+         │ Authorization: Bearer │                       │
+         ├──────────────────────►│                       │
+         │                       │ SecurityFilter        │
+         │                       │ valida token          │
+         │                       │                       │
+         │ 200 OK                │                       │
+         │ [lista de contas]     │                       │
+         │ ◄─────────────────────┤                       │
+                </div>
+
+                <h3>Cenários de Uso</h3>
+                <div class="info-box">
+                    <h4>Login Bem-sucedido</h4>
+                    <ol>
+                        <li>Usuário acessa <code>/login.html</code></li>
+                        <li>Preenche credenciais válidas</li>
+                        <li>Frontend envia POST <code>/login</code></li>
+                        <li>Backend valida credenciais</li>
+                        <li>Backend gera token JWT</li>
+                        <li>Frontend armazena token</li>
+                        <li>Redirecionamento para <code>/</code></li>
+                    </ol>
+                </div>
+
+                <div class="info-box">
+                    <h4>Acesso a Rota Protegida</h4>
+                    <ol>
+                        <li>Frontend faz requisição com token</li>
+                        <li>SecurityFilter intercepta</li>
+                        <li>Token é validado</li>
+                        <li>Usuário é autenticado</li>
+                        <li>Requisição prossegue</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- TESTES -->
+            <div class="section" id="testes">
+                <h2>🧪 TESTES E VALIDAÇÃO</h2>
+                
+                <h3>1. Testes com cURL</h3>
+                
+                <h4>Login</h4>
+                <div class="code-block">
+# Teste de login bem-sucedido
+curl -X POST http://localhost:8080/login \
+  -H "Content-Type: application/json" \
+  -d '{"login":"admin","senha":"123456"}'
+
+# Resposta esperada:
+# {"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."}
+                </div>
+
+                <h4>Acesso com Token</h4>
+                <div class="code-block">
+# Listar contas com token
+curl -X GET http://localhost:8080/contas \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+# Resposta esperada: Lista de contas
+                </div>
+
+                <h3>2. Checklist de Segurança</h3>
+                <ul class="checklist">
+                    <li>Senhas criptografadas com BCrypt</li>
+                    <li>Tokens JWT com expiração</li>
+                    <li>CSRF desabilitado (stateless)</li>
+                    <li>Sessões desabilitadas</li>
+                    <li>Rotas protegidas por padrão</li>
+                    <li>CORS configurado</li>
+                </ul>
+
+                <h3>3. Conceitos Aprendidos</h3>
+                <div class="success-box">
+                    <h4>Spring Security</h4>
+                    <ul>
+                        <li>Configuração de segurança stateless</li>
+                        <li>Filtros customizados</li>
+                        <li>AuthenticationManager</li>
+                        <li>UserDetailsService</li>
+                        <li>PasswordEncoder (BCrypt)</li>
+                    </ul>
+
+                    <h4>JWT (JSON Web Token)</h4>
+                    <ul>
+                        <li>Estrutura do token (Header.Payload.Signature)</li>
+                        <li>Geração e validação de tokens</li>
+                        <li>Claims e expiração</li>
+                        <li>Stateless authentication</li>
+                    </ul>
+
+                    <h4>Frontend Security</h4>
+                    <ul>
+                        <li>Armazenamento seguro de tokens</li>
+                        <li>Interceptação de requisições</li>
+                        <li>Redirecionamento automático</li>
+                        <li>Gerenciamento de estado de autenticação</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>📄 Documento criado para fins didáticos - Sistema de Contas Bancárias com JWT</p>
+            <p>🏦 Projeto desenvolvido com Spring Boot 3.3.8 + Spring Security + Oracle Database</p>
+        </div>
+    </div>
+</body>
+</html>

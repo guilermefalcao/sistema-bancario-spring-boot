@@ -254,8 +254,15 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🏦 Sistema de Contas Bancárias</h1>
-            <p>Gerencie suas contas de forma simples e eficiente</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>🏦 Sistema de Contas Bancárias</h1>
+                    <p>Gerencie suas contas de forma simples e eficiente</p>
+                </div>
+                <button class="btn btn-danger" onclick="AuthManager.logout()" style="margin: 0;">
+                    🚪 Sair
+                </button>
+            </div>
         </div>
 
         <div class="content">
@@ -309,6 +316,37 @@
     </div>
 
     <script>
+        // Verificar autenticação ao carregar a página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Importar AuthManager se não estiver disponível
+            if (typeof AuthManager === 'undefined') {
+                // Carregar auth.js dinamicamente
+                const script = document.createElement('script');
+                script.src = 'auth.js';
+                script.onload = function() {
+                    verificarAutenticacao();
+                };
+                document.head.appendChild(script);
+            } else {
+                verificarAutenticacao();
+            }
+        });
+
+        function verificarAutenticacao() {
+            // Redireciona para login se não autenticado
+            if (!AuthManager.requireAuth()) {
+                return;
+            }
+            
+            console.log('✅ Usuário autenticado, carregando sistema...');
+            
+            // Configurar interceptador de fetch
+            AuthManager.setupFetchInterceptor();
+            
+            // Inicializar aplicação
+            listarContas();
+        }
+
         // URL base da API
         const API_BASE = 'http://localhost:8080/contas';
 
@@ -1068,7 +1106,7 @@
         }
 
         // Carregar contas ao inicializar a página
-        document.addEventListener('DOMContentLoaded', listarContas);
+        // document.addEventListener('DOMContentLoaded', listarContas); // Removido - agora é chamado após autenticação
     </script>
 </body>
 

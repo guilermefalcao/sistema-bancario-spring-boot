@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 Guia Completo - Swagger API</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin: 25px 0 15px 0;
+        }
+
+        .section p, .section li {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .section ul, .section ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        .highlight-box {
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin: 10px 10px 10px 0;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.6);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .emoji {
+            font-size: 1.3em;
+            margin-right: 8px;
+        }
+
+        .footer {
+            background: #2d2d2d;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            color: #ccc;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .section h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- CABEÇALHO -->
+        <div class="header">
+            <h1>📚 Guia Completo - Swagger API</h1>
+            <p>Sistema de Contas Bancárias - Documentação Interativa</p>
+        </div>
+
+        <!-- CONTEÚDO -->
+        <div class="content">
+            
+            <!-- SEÇÃO 1: O QUE É SWAGGER -->
+            <div class="section">
+                <h2><span class="emoji">🤔</span>O que é Swagger?</h2>
+                
+                <p>
+                    <strong>Swagger</strong> (também conhecido como <strong>OpenAPI</strong>) é uma ferramenta poderosa para 
+                    <strong>documentar e testar APIs REST</strong> de forma automática e interativa.
+                </p>
+
+                <div class="highlight-box">
+                    <h3>✨ Principais Benefícios</h3>
+                    <ul>
+                        <li><strong>📖 Documentação Automática:</strong> Gera documentação completa da API a partir do código</li>
+                        <li><strong>🧪 Testes Interativos:</strong> Permite testar endpoints diretamente no navegador</li>
+                        <li><strong>🔍 Exploração Visual:</strong> Interface amigável para explorar todos os endpoints</li>
+                        <li><strong>📝 Exemplos Práticos:</strong> Mostra exemplos de requisições e respostas</li>
+                        <li><strong>🔐 Suporte a Autenticação:</strong> Integração com JWT, OAuth, API Keys, etc.</li>
+                        <li><strong>📤 Exportação:</strong> Gera especificação OpenAPI em JSON/YAML</li>
+                    </ul>
+                </div>
+
+                <h3>🎯 Para que serve?</h3>
+                <ul>
+                    <li><strong>Desenvolvedores:</strong> Testar endpoints durante o desenvolvimento</li>
+                    <li><strong>QA/Testers:</strong> Validar funcionalidades da API</li>
+                    <li><strong>Frontend:</strong> Entender contratos da API antes de integrar</li>
+                    <li><strong>Documentação:</strong> Manter documentação sempre atualizada</li>
+                    <li><strong>Clientes da API:</strong> Aprender a usar a API de forma prática</li>
+                </ul>
+            </div>
+
+            <!-- SEÇÃO 2: COMO ACESSAR -->
+            <div class="section">
+                <h2><span class="emoji">🚀</span>Como Acessar o Swagger</h2>
+                
+                <div class="success-box">
+                    <h3>🌐 URLs de Acesso</h3>
+                    <p><strong>Interface Swagger UI:</strong></p>
+                    <div class="code-block">http://localhost:8080/swagger-ui.html<br>http://127.0.0.1:8080/swagger-ui.html</div>
+                    
+                    <p><strong>Especificação OpenAPI (JSON):</strong></p>
+                    <div class="code-block">http://localhost:8080/v3/api-docs</div>
+                </div>
+
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="http://localhost:8080/swagger-ui.html" class="btn" target="_blank">
+                        🚀 Abrir Swagger UI
+                    </a>
+                    <a href="http://127.0.0.1:8080/swagger-ui.html" class="btn btn-secondary" target="_blank">
+                        🚀 Abrir Swagger UI (IP)
+                    </a>
+                </div>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ Importante:</strong> Certifique-se de que a aplicação Spring Boot está rodando antes de acessar o Swagger!</p>
+                    <div class="code-block">mvn spring-boot:run</div>
+                </div>
+            </div>
+
+            <!-- SEÇÃO 3: PASSO A PASSO -->
+            <div class="section">
+                <h2><span class="emoji">📋</span>Passo a Passo - Como Usar</h2>
+
+                <h3><span class="step-number">1</span>Fazer Login e Obter Token JWT</h3>
+                <ol>
+                    <li>Abra o Swagger UI no navegador</li>
+                    <li>Localize a seção <strong>"1. Autenticação"</strong></li>
+                    <li>Clique no endpoint <strong>POST /login</strong></li>
+                    <li>Clique no botão <strong>"Try it out"</strong></li>
+                    <li>Escolha um dos exemplos de usuário ou use:</li>
+                </ol>
+
+                <div class="code-block">{
+  "login": "admin",
+  "senha": "123456"
+}</div>
+
+                <ol start="6">
+                    <li>Clique em <strong>"Execute"</strong></li>
+                    <li>Na resposta (Response body), copie o valor do campo <strong>"token"</strong></li>
+                </ol>
+
+                <div class="success-box">
+                    <p><strong>✅ Exemplo de resposta:</strong></p>
+                    <div class="code-block">{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJBUEkgQ29udGEiLCJzdWIiOiJhZG1pbiIsImlkIjoxLCJleHAiOjE3MDUwNjg3NjB9.abc123..."
+}</div>
+                </div>
+
+                <h3><span class="step-number">2</span>Autorizar com o Token JWT</h3>
+                <ol>
+                    <li>No topo da página do Swagger, clique no botão <strong>"Authorize" 🔓</strong></li>
+                    <li>Cole o token JWT no campo (sem adicionar "Bearer")</li>
+                    <li>Clique em <strong>"Authorize"</strong></li>
+                    <li>Clique em <strong>"Close"</strong></li>
+                </ol>
+
+                <div class="success-box">
+                    <p><strong>✅ Pronto!</strong> Agora você está autenticado e pode testar todos os endpoints protegidos!</p>
+                </div>
+
+                <h3><span class="step-number">3</span>Testar Endpoints da API</h3>
+                <ol>
+                    <li>Navegue até a seção <strong>"2. Contas Bancárias"</strong></li>
+                    <li>Escolha um endpoint (ex: <strong>GET /contas</strong>)</li>
+                    <li>Clique em <strong>"Try it out"</strong></li>
+                    <li>Preencha os parâmetros necessários (se houver)</li>
+                    <li>Clique em <strong>"Execute"</strong></li>
+                    <li>Veja a resposta na seção <strong>"Response"</strong></li>
+                </ol>
+
+                <div class="highlight-box">
+                    <h3>💡 Dicas Importantes</h3>
+                    <ul>
+                        <li>O token JWT expira em <strong>2 horas</strong> - após isso, faça login novamente</li>
+                        <li>Use os <strong>exemplos pré-configurados</strong> para facilitar os testes</li>
+                        <li>Observe os <strong>códigos de resposta HTTP</strong> (200, 201, 400, 401, 404)</li>
+                        <li>Leia as <strong>descrições dos endpoints</strong> para entender o que cada um faz</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- SEÇÃO 4: ENDPOINTS DISPONÍVEIS -->
+            <div class="section">
+                <h2><span class="emoji">🔗</span>Endpoints Disponíveis</h2>
+
+                <h3>🔐 1. Autenticação</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Método</th>
+                                <th>Endpoint</th>
+                                <th>Descrição</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>POST</strong></td>
+                                <td>/login</td>
+                                <td>Realizar login e obter token JWT</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>🏦 2. Contas Bancárias</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Método</th>
+                                <th>Endpoint</th>
+                                <th>Descrição</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>GET</strong></td>
+                                <td>/contas</td>
+                                <td>Listar todas as contas</td>
+                            </tr>
+                            <tr>
+                                <td><strong>GET</strong></td>
+                                <td>/contas/{id}</td>
+                                <td>Buscar conta por ID</td>
+                            </tr>
+                            <tr>
+                                <td><strong>POST</strong></td>
+                                <td>/contas</td>
+                                <td>Criar nova conta</td>
+                            </tr>
+                            <tr>
+                                <td><strong>PUT</strong></td>
+                                <td>/contas/{id}</td>
+                                <td>Atualizar conta (completo)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>PATCH</strong></td>
+                                <td>/contas/{id}</td>
+                                <td>Atualizar conta (parcial)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>DELETE</strong></td>
+                                <td>/contas/{id}</td>
+                                <td>Excluir conta</td>
+                            </tr>
+                            <tr>
+                                <td><strong>GET</strong></td>
+                                <td>/contas/{id}/extrato</td>
+                                <td>Consultar extrato</td>
+                            </tr>
+                            <tr>
+                                <td><strong>POST</strong></td>
+                                <td>/contas/{id}/deposito</td>
+                                <td>Realizar depósito</td>
+                            </tr>
+                            <tr>
+                                <td><strong>POST</strong></td>
+                                <td>/contas/{id}/saque</td>
+                                <td>Realizar saque</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SEÇÃO 5: USUÁRIOS DE TESTE -->
+            <div class="section">
+                <h2><span class="emoji">👥</span>Usuários de Teste</h2>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Login</th>
+                                <th>Senha</th>
+                                <th>Descrição</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>admin</strong></td>
+                                <td>123456</td>
+                                <td>Usuário administrador</td>
+                            </tr>
+                            <tr>
+                                <td><strong>usuario</strong></td>
+                                <td>123456</td>
+                                <td>Usuário comum</td>
+                            </tr>
+                            <tr>
+                                <td><strong>teste</strong></td>
+                                <td>123456</td>
+                                <td>Usuário para testes</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SEÇÃO 6: CÓDIGOS DE RESPOSTA -->
+            <div class="section">
+                <h2><span class="emoji">📊</span>Códigos de Resposta HTTP</h2>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Status</th>
+                                <th>Significado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>200</strong></td>
+                                <td>✅ OK</td>
+                                <td>Requisição bem-sucedida</td>
+                            </tr>
+                            <tr>
+                                <td><strong>201</strong></td>
+                                <td>✅ Created</td>
+                                <td>Recurso criado com sucesso</td>
+                            </tr>
+                            <tr>
+                                <td><strong>204</strong></td>
+                                <td>✅ No Content</td>
+                                <td>Sucesso sem conteúdo de retorno</td>
+                            </tr>
+                            <tr>
+                                <td><strong>400</strong></td>
+                                <td>❌ Bad Request</td>
+                                <td>Dados inválidos ou malformados</td>
+                            </tr>
+                            <tr>
+                                <td><strong>401</strong></td>
+                                <td>🔒 Unauthorized</td>
+                                <td>Não autenticado ou token inválido</td>
+                            </tr>
+                            <tr>
+                                <td><strong>403</strong></td>
+                                <td>🚫 Forbidden</td>
+                                <td>Sem permissão para acessar</td>
+                            </tr>
+                            <tr>
+                                <td><strong>404</strong></td>
+                                <td>❌ Not Found</td>
+                                <td>Recurso não encontrado</td>
+                            </tr>
+                            <tr>
+                                <td><strong>500</strong></td>
+                                <td>💥 Internal Server Error</td>
+                                <td>Erro interno do servidor</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SEÇÃO 7: EXEMPLOS PRÁTICOS -->
+            <div class="section">
+                <h2><span class="emoji">💻</span>Exemplos Práticos</h2>
+
+                <h3>📝 Exemplo 1: Criar uma Nova Conta</h3>
+                <p><strong>Endpoint:</strong> POST /contas</p>
+                <div class="code-block">{
+  "nome": "João Silva",
+  "cpf": "12345678901",
+  "saldo": 1000.00
+}</div>
+
+                <h3>💰 Exemplo 2: Realizar Depósito</h3>
+                <p><strong>Endpoint:</strong> POST /contas/1/deposito</p>
+                <div class="code-block">{
+  "valor": 500.00
+}</div>
+
+                <h3>💵 Exemplo 3: Realizar Saque</h3>
+                <p><strong>Endpoint:</strong> POST /contas/1/saque</p>
+                <div class="code-block">{
+  "valor": 200.00
+}</div>
+            </div>
+
+            <!-- SEÇÃO 8: TROUBLESHOOTING -->
+            <div class="section">
+                <h2><span class="emoji">🔧</span>Solução de Problemas</h2>
+
+                <div class="warning-box">
+                    <h3>❌ Erro 401 - Unauthorized</h3>
+                    <p><strong>Causa:</strong> Token JWT inválido, expirado ou não fornecido</p>
+                    <p><strong>Solução:</strong></p>
+                    <ul>
+                        <li>Faça login novamente no endpoint POST /login</li>
+                        <li>Copie o novo token</li>
+                        <li>Clique em "Authorize" e cole o token</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h3>❌ Erro 404 - Not Found</h3>
+                    <p><strong>Causa:</strong> Recurso não existe no banco de dados</p>
+                    <p><strong>Solução:</strong></p>
+                    <ul>
+                        <li>Verifique se o ID da conta existe</li>
+                        <li>Use GET /contas para listar todas as contas disponíveis</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h3>❌ Erro 400 - Bad Request</h3>
+                    <p><strong>Causa:</strong> Dados inválidos ou campos obrigatórios faltando</p>
+                    <p><strong>Solução:</strong></p>
+                    <ul>
+                        <li>Verifique se todos os campos obrigatórios estão preenchidos</li>
+                        <li>Confira se os tipos de dados estão corretos (números, strings, etc.)</li>
+                        <li>Use os exemplos fornecidos no Swagger</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- SEÇÃO 9: RECURSOS ADICIONAIS -->
+            <div class="section">
+                <h2><span class="emoji">📚</span>Recursos Adicionais</h2>
+
+                <div class="highlight-box">
+                    <h3>🔗 Links Úteis</h3>
+                    <ul>
+                        <li><strong>Swagger UI:</strong> <a href="http://localhost:8080/swagger-ui.html" target="_blank">http://localhost:8080/swagger-ui.html</a></li>
+                        <li><strong>OpenAPI JSON:</strong> <a href="http://localhost:8080/v3/api-docs" target="_blank">http://localhost:8080/v3/api-docs</a></li>
+                        <li><strong>Página de Login:</strong> <a href="http://localhost:8080/login.html" target="_blank">http://localhost:8080/login.html</a></li>
+                        <li><strong>Sistema Principal:</strong> <a href="http://localhost:8080/index.html" target="_blank">http://localhost:8080/index.html</a></li>
+                    </ul>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>📖 Documentação Oficial</h3>
+                    <ul>
+                        <li><strong>Swagger/OpenAPI:</strong> <a href="https://swagger.io/docs/" target="_blank">https://swagger.io/docs/</a></li>
+                        <li><strong>SpringDoc:</strong> <a href="https://springdoc.org/" target="_blank">https://springdoc.org/</a></li>
+                        <li><strong>Spring Security:</strong> <a href="https://spring.io/projects/spring-security" target="_blank">https://spring.io/projects/spring-security</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RODAPÉ -->
+        <div class="footer">
+            <p><strong>🏦 Sistema de Contas Bancárias</strong></p>
+            <p>Desenvolvido com Spring Boot 3.3.8 + Oracle Database + JWT Authentication</p>
+            <p>👨‍💻 Guilherme - Dataprev | 2024</p>
+        </div>
+    </div>
+</body>
+</html>

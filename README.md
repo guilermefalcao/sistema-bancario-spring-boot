@@ -4,21 +4,26 @@ Sistema bancário completo desenvolvido com **Spring Boot 3.3.8** + **Oracle Dat
 
 ## 🚀 Funcionalidades
 
+- ✅ **Autenticação JWT**: Login seguro com tokens de 2 horas
 - ✅ **Gestão de Contas**: Criar, listar, editar, excluir
 - ✅ **Operações Bancárias**: Depósito, saque com validação de saldo
 - ✅ **Extrato Bancário**: Histórico completo de movimentações
 - ✅ **Busca Inteligente**: Por ID ou nome do cliente
 - ✅ **Interface Web**: Frontend responsivo e moderno
 - ✅ **API REST**: Endpoints completos para integração
+- ✅ **Documentação Swagger**: Interface interativa para testar a API
 - ✅ **Validações**: CPF único, saldo não negativo, dados obrigatórios
 
 ## 🛠️ Tecnologias
 
 ### Backend
 - **Spring Boot 3.3.8** - Framework principal
+- **Spring Security** - Autenticação e autorização
+- **JWT (Auth0)** - Tokens de autenticação
 - **Spring Data JPA** - Persistência de dados
 - **Spring Web** - API REST
 - **Spring Validation** - Validação de dados
+- **Swagger/OpenAPI 3** - Documentação da API
 - **Oracle Database** - Banco de dados
 - **Maven** - Gerenciamento de dependências
 
@@ -55,6 +60,12 @@ Sistema bancário completo desenvolvido com **Spring Boot 3.3.8** + **Oracle Dat
 
 ## 🔗 Endpoints API
 
+### Autenticação
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| `POST` | `/login` | Realizar login e obter token JWT |
+
+### Contas Bancárias
 | Método | Endpoint | Descrição |
 |--------|----------|-----------|
 | `GET` | `/contas` | Lista todas as contas |
@@ -65,6 +76,12 @@ Sistema bancário completo desenvolvido com **Spring Boot 3.3.8** + **Oracle Dat
 | `GET` | `/contas/{id}/extrato` | Consulta extrato |
 | `POST` | `/contas/{id}/deposito` | Realiza depósito |
 | `POST` | `/contas/{id}/saque` | Realiza saque |
+
+### Documentação
+| URL | Descrição |
+|-----|------------|
+| `/swagger-ui.html` | Interface Swagger para testar API |
+| `/v3/api-docs` | Especificação OpenAPI (JSON) |
 
 ## 🚀 Como Executar
 
@@ -96,8 +113,59 @@ mvn spring-boot:run
 ```
 
 ### 4. Acessar Sistema
-- **Frontend:** http://localhost:8080
+- **Frontend:** http://localhost:8080 ou http://127.0.0.1:8080
+- **Login:** http://localhost:8080/login.html
 - **API REST:** http://localhost:8080/contas
+- **Swagger UI:** http://localhost:8080/swagger-ui.html
+- **OpenAPI JSON:** http://localhost:8080/v3/api-docs
+
+## 📚 Documentação Swagger
+
+### O que é Swagger?
+Swagger (OpenAPI) é uma ferramenta de **documentação interativa** que permite:
+- 📝 Visualizar todos os endpoints da API
+- 🧪 Testar requisições diretamente no navegador
+- 🔐 Autenticar com JWT e testar rotas protegidas
+- 📊 Ver exemplos de request/response
+- 📚 Entender contratos da API
+
+### Como Usar o Swagger
+
+1. **Acesse o Swagger UI:**
+   ```
+   http://localhost:8080/swagger-ui.html
+   ```
+
+2. **Faça Login:**
+   - Clique em `POST /login`
+   - Clique em "Try it out"
+   - Use: `{"login": "admin", "senha": "123456"}`
+   - Clique em "Execute"
+   - Copie o token JWT da resposta
+
+3. **Autorize:**
+   - Clique no botão "🔓 Authorize" no topo
+   - Cole o token (sem "Bearer")
+   - Clique em "Authorize" e depois "Close"
+
+4. **Teste os Endpoints:**
+   - Navegue pelos endpoints
+   - Clique em "Try it out"
+   - Preencha os parâmetros
+   - Clique em "Execute"
+
+### Usuários de Teste
+| Login | Senha | Descrição |
+|-------|-------|------------|
+| admin | 123456 | Administrador |
+| usuario | 123456 | Usuário comum |
+| teste | 123456 | Usuário de testes |
+
+### Documentação Completa
+Para um guia detalhado com exemplos e troubleshooting, abra:
+```
+GUIA_SWAGGER.html
+```
 
 ## 📱 Interface Web
 
@@ -126,6 +194,12 @@ mvn spring-boot:run
 
 ## 🧪 Testes
 
+### Testar com Swagger (Recomendado)
+1. Acesse: http://localhost:8080/swagger-ui.html
+2. Faça login e obtenha o token JWT
+3. Clique em "Authorize" e cole o token
+4. Teste todos os endpoints interativamente
+
 ### Testar API com cURL
 ```bash
 # Listar contas
@@ -151,6 +225,8 @@ curl -X POST http://localhost:8080/contas/1/deposito \
 - ✅ **Bean Validation** com anotações
 - ✅ **Tratamento de exceções** global
 - ✅ **Transações** automáticas
+- ✅ **Segurança JWT** com Spring Security
+- ✅ **Documentação Swagger** automática
 
 ### Boas Práticas
 - ✅ **DTOs** para transferência de dados
@@ -170,12 +246,16 @@ backend-conta/
 │   ├── repository/         # Acesso aos dados
 │   ├── entity/            # Entidades JPA
 │   ├── dto/               # Data Transfer Objects
-│   └── config/            # Configurações
+│   ├── domain/            # Entidades de domínio (Usuario)
+│   ├── infra/             # Infraestrutura (Security, Exception)
+│   └── config/            # Configurações (Swagger, DataInitializer)
 ├── src/main/resources/
 │   ├── static/            # Frontend (HTML/CSS/JS)
 │   └── application.properties
 ├── *.sql                  # Scripts Oracle
-└── documentacao/          # Documentação completa
+├── GUIA_SWAGGER.html      # Guia completo do Swagger
+├── GUIA_COMPLETO_JWT.html # Guia completo do JWT
+└── README.md              # Este arquivo
 ```
 
 ## 🤝 Contribuição

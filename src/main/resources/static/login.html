@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema Bancário</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <!-- Container principal da tela de login -->
+    <div class="login-container">
+        <div class="login-card">
+            
+            <!-- Cabeçalho com título e descrição -->
+            <div class="login-header">
+                <h1>🏦 Sistema Bancário</h1>
+                <p>Faça login para acessar sua conta</p>
+            </div>
+
+            <!-- Formulário de login -->
+            <form id="loginForm" class="login-form">
+                
+                <!-- Campo de usuário -->
+                <div class="form-group">
+                    <label for="login">Usuário:</label>
+                    <input 
+                        type="text" 
+                        id="login" 
+                        name="login" 
+                        required 
+                        placeholder="Digite seu usuário"
+                        autocomplete="username">
+                </div>
+
+                <!-- Campo de senha -->
+                <div class="form-group">
+                    <label for="senha">Senha:</label>
+                    <input 
+                        type="password" 
+                        id="senha" 
+                        name="senha" 
+                        required 
+                        placeholder="Digite sua senha"
+                        autocomplete="current-password">
+                </div>
+
+                <!-- Botão de login com estados de loading -->
+                <button type="submit" class="login-btn">
+                    <span class="btn-text">Entrar</span>
+                    <span class="btn-loading" style="display: none;">🔄 Entrando...</span>
+                </button>
+            </form>
+
+            <!-- Área para mensagens de erro/sucesso -->
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+            <!-- Rodapé com informações de usuários de teste -->
+            <div class="login-footer">
+                <p><strong>👥 Usuários de teste:</strong></p>
+                <div class="test-users">
+                    <p>👤 <strong>admin</strong> / 123456</p>
+                    <p>👤 <strong>usuario</strong> / 123456</p>
+                    <p>👤 <strong>teste</strong> / 123456</p>
+                </div>
+                <p class="info-text">💡 Use qualquer um dos usuários acima para testar o sistema</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script de autenticação -->
+    <script src="auth.js"></script>
+    
+    <!-- Script inline para inicialização da página -->
+    <script>
+        // Verifica se já está logado ao carregar a página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Página de login carregada');
+            
+            // Se já está autenticado, redireciona para o sistema
+            if (AuthManager.isAuthenticated()) {
+                console.log('✅ Usuário já autenticado, redirecionando...');
+                window.location.href = '/';
+                return;
+            }
+            
+            console.log('🔓 Usuário não autenticado, exibindo tela de login');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,378 @@
+/* =====================================================
+   RESET E CONFIGURAÇÕES BÁSICAS
+   ===================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-x: hidden;
+}
+
+/* =====================================================
+   CONTAINER PRINCIPAL
+   ===================================================== */
+
+.login-container {
+    width: 100%;
+    max-width: 420px;
+    animation: slideUp 0.8s ease-out;
+}
+
+/* Animação de entrada suave */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =====================================================
+   CARD DE LOGIN
+   ===================================================== */
+
+.login-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.1),
+        0 10px 20px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.15),
+        0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* =====================================================
+   CABEÇALHO DO LOGIN
+   ===================================================== */
+
+.login-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 40px 30px;
+    text-align: center;
+    position: relative;
+}
+
+.login-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.login-header h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    font-weight: 700;
+    position: relative;
+    z-index: 1;
+}
+
+.login-header p {
+    opacity: 0.95;
+    font-size: 16px;
+    font-weight: 300;
+    position: relative;
+    z-index: 1;
+}
+
+/* =====================================================
+   FORMULÁRIO DE LOGIN
+   ===================================================== */
+
+.login-form {
+    padding: 40px 30px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background-color: #f7fafc;
+    color: #2d3748;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #667eea;
+    background-color: white;
+    box-shadow: 
+        0 0 0 3px rgba(102, 126, 234, 0.1),
+        0 4px 12px rgba(102, 126, 234, 0.15);
+    transform: translateY(-2px);
+}
+
+.form-group input::placeholder {
+    color: #a0aec0;
+    font-style: italic;
+}
+
+/* =====================================================
+   BOTÃO DE LOGIN
+   ===================================================== */
+
+.login-btn {
+    width: 100%;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.login-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.login-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+}
+
+.login-btn:hover::before {
+    left: 100%;
+}
+
+.login-btn:active {
+    transform: translateY(-1px);
+}
+
+.login-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.login-btn:disabled:hover {
+    box-shadow: none;
+}
+
+/* Estados do botão */
+.btn-loading {
+    display: none;
+}
+
+/* =====================================================
+   MENSAGENS DE ERRO/SUCESSO
+   ===================================================== */
+
+.error-message {
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Estilo para erro */
+.error-message.error {
+    background-color: #fed7d7;
+    color: #c53030;
+    border-left: 4px solid #e53e3e;
+}
+
+/* Estilo para sucesso */
+.error-message.success {
+    background-color: #c6f6d5;
+    color: #2f855a;
+    border-left: 4px solid #38a169;
+}
+
+/* =====================================================
+   RODAPÉ COM INFORMAÇÕES
+   ===================================================== */
+
+.login-footer {
+    background-color: #f7fafc;
+    padding: 30px;
+    text-align: center;
+    border-top: 1px solid #e2e8f0;
+}
+
+.login-footer p {
+    margin: 8px 0;
+    font-size: 13px;
+    color: #4a5568;
+}
+
+.login-footer p:first-child {
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.test-users {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 15px 0;
+    border: 1px solid #e2e8f0;
+}
+
+.test-users p {
+    margin: 5px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #2d3748;
+}
+
+.info-text {
+    font-style: italic;
+    color: #718096 !important;
+    margin-top: 15px !important;
+}
+
+/* =====================================================
+   RESPONSIVIDADE
+   ===================================================== */
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    .login-container {
+        max-width: 100%;
+    }
+    
+    .login-header {
+        padding: 30px 20px;
+    }
+    
+    .login-header h1 {
+        font-size: 24px;
+    }
+    
+    .login-form {
+        padding: 30px 20px;
+    }
+    
+    .login-footer {
+        padding: 20px;
+    }
+    
+    .form-group input {
+        padding: 12px 15px;
+        font-size: 16px; /* Evita zoom no iOS */
+    }
+}
+
+@media (max-width: 320px) {
+    .login-header h1 {
+        font-size: 22px;
+    }
+    
+    .login-header p {
+        font-size: 14px;
+    }
+    
+    .form-group input {
+        padding: 10px 12px;
+    }
+    
+    .login-btn {
+        padding: 14px 16px;
+        font-size: 14px;
+    }
+}
+
+/* =====================================================
+   MODO ESCURO (OPCIONAL)
+   ===================================================== */
+
+@media (prefers-color-scheme: dark) {
+    /* Implementação futura para modo escuro */
+}
+
+/* =====================================================
+   ANIMAÇÕES ADICIONAIS
+   ===================================================== */
+
+.form-group {
+    animation: slideInLeft 0.6s ease forwards;
+    opacity: 0;
+}
+
+.form-group:nth-child(1) { animation-delay: 0.1s; }
+.form-group:nth-child(2) { animation-delay: 0.2s; }
+.login-btn { 
+    animation: slideInLeft 0.6s ease forwards;
+    animation-delay: 0.3s;
+    opacity: 0;
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

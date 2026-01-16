@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia Completo - Sistema JWT Authentication</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        h3 {
+            color: #495057;
+            font-size: 1.4em;
+            margin: 25px 0 15px 0;
+        }
+
+        h4 {
+            color: #6c757d;
+            font-size: 1.2em;
+            margin: 20px 0 10px 0;
+        }
+
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .info-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .step {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .flow-diagram {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.2;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist li {
+            margin: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .checklist li:before {
+            content: "✅";
+            position: absolute;
+            left: 0;
+        }
+
+        .toc {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .toc ul {
+            list-style: none;
+        }
+
+        .toc li {
+            margin: 5px 0;
+        }
+
+        .toc a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 GUIA COMPLETO</h1>
+            <p>Sistema de Contas Bancárias com JWT Authentication</p>
+            <p><strong>Spring Boot 3.3.8 + Spring Security + Oracle Database</strong></p>
+        </div>
+
+        <div class="content">
+            <!-- ÍNDICE -->
+            <div class="toc">
+                <h2>📋 ÍNDICE</h2>
+                <ul>
+                    <li><a href="#visao-geral">1. Visão Geral do Projeto</a></li>
+                    <li><a href="#funcionamento-jwt">2. Como Funciona o JWT</a></li>
+                    <li><a href="#arquitetura">3. Arquitetura da Aplicação</a></li>
+                    <li><a href="#implementacao">4. Implementação Passo a Passo</a></li>
+                    <li><a href="#testes-insomnia">5. Testes com Insomnia</a></li>
+                    <li><a href="#tratamento-erros">6. Tratamento de Erros</a></li>
+                    <li><a href="#seguranca">7. Aspectos de Segurança</a></li>
+                </ul>
+            </div>
+
+            <!-- VISÃO GERAL -->
+            <div class="section" id="visao-geral">
+                <h2>🎯 1. VISÃO GERAL DO PROJETO</h2>
+                
+                <h3>Objetivo</h3>
+                <p>Desenvolver um sistema bancário completo com autenticação JWT (JSON Web Token), permitindo:</p>
+                <ul class="checklist">
+                    <li>Login seguro com usuário e senha</li>
+                    <li>Geração de tokens JWT para autenticação</li>
+                    <li>Proteção de rotas da API</li>
+                    <li>Gestão completa de contas bancárias</li>
+                    <li>Interface web responsiva</li>
+                </ul>
+
+                <h3>Tecnologias Utilizadas</h3>
+                <div class="info-box">
+                    <h4>Backend</h4>
+                    <ul>
+                        <li><strong>Spring Boot 3.3.8</strong> - Framework principal</li>
+                        <li><strong>Spring Security 6</strong> - Autenticação e autorização</li>
+                        <li><strong>JWT (Auth0)</strong> - Tokens de autenticação</li>
+                        <li><strong>Spring Data JPA</strong> - Persistência de dados</li>
+                        <li><strong>Oracle Database</strong> - Banco de dados</li>
+                        <li><strong>BCrypt</strong> - Criptografia de senhas</li>
+                    </ul>
+
+                    <h4>Frontend</h4>
+                    <ul>
+                        <li><strong>HTML5/CSS3</strong> - Interface responsiva</li>
+                        <li><strong>JavaScript ES6</strong> - Lógica do frontend</li>
+                        <li><strong>Fetch API</strong> - Comunicação com backend</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- FUNCIONAMENTO JWT -->
+            <div class="section" id="funcionamento-jwt">
+                <h2>🔑 2. COMO FUNCIONA O JWT</h2>
+                
+                <h3>O que é JWT?</h3>
+                <p>JWT (JSON Web Token) é um padrão aberto (RFC 7519) que define uma forma compacta e segura de transmitir informações entre partes como um objeto JSON.</p>
+
+                <h3>Estrutura do Token JWT</h3>
+                <div class="code-block">
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY0MjY4NjQwMCwiZXhwIjoxNjQyNjkzNjAwfQ.signature
+│────────── HEADER ──────────│─────────── PAYLOAD ───────────│─ SIGNATURE ─│
+                </div>
+
+                <h4>1. Header (Cabeçalho)</h4>
+                <div class="code-block">
+{
+  "alg": "HS256",    // Algoritmo de assinatura
+  "typ": "JWT"       // Tipo do token
+}
+                </div>
+
+                <h4>2. Payload (Dados)</h4>
+                <div class="code-block">
+{
+  "sub": "admin",              // Subject (usuário)
+  "iss": "API Conta Bancária", // Issuer (emissor)
+  "iat": 1642686400,          // Issued At (emitido em)
+  "exp": 1642693600,          // Expiration (expira em)
+  "userId": 1                 // Dados customizados
+}
+                </div>
+
+                <h4>3. Signature (Assinatura)</h4>
+                <div class="code-block">
+HMACSHA256(
+  base64UrlEncode(header) + "." + base64UrlEncode(payload),
+  secret
+)
+                </div>
+
+                <h3>Fluxo de Autenticação JWT</h3>
+                <div class="flow-diagram">
+1. 👤 USUÁRIO faz login com credenciais
+   ↓
+2. 🔐 SERVIDOR valida credenciais no banco
+   ↓
+3. ✅ Se válidas: gera TOKEN JWT
+   ↓
+4. 📱 CLIENTE armazena token (localStorage)
+   ↓
+5. 🔄 CLIENTE envia token em todas as requisições
+   ↓
+6. 🛡️ SERVIDOR valida token a cada requisição
+   ↓
+7. ✅ Se válido: permite acesso ao recurso
+                </div>
+
+                <h3>Vantagens do JWT</h3>
+                <ul class="checklist">
+                    <li><strong>Stateless:</strong> Servidor não precisa armazenar sessões</li>
+                    <li><strong>Escalável:</strong> Funciona em múltiplos servidores</li>
+                    <li><strong>Seguro:</strong> Assinatura digital garante integridade</li>
+                    <li><strong>Compacto:</strong> Pode ser enviado via URL, POST ou HTTP Header</li>
+                    <li><strong>Auto-contido:</strong> Contém todas as informações necessárias</li>
+                </ul>
+            </div>
+
+            <!-- ARQUITETURA -->
+            <div class="section" id="arquitetura">
+                <h2>🏗️ 3. ARQUITETURA DA APLICAÇÃO</h2>
+                
+                <h3>Camadas da Aplicação</h3>
+                <div class="flow-diagram">
+┌─────────────────────────────────────────────────────────┐
+│                    FRONTEND                             │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐    │
+│  │ login.html  │  │ index.html  │  │   auth.js   │    │
+│  └─────────────┘  └─────────────┘  └─────────────┘    │
+└─────────────────────────────────────────────────────────┘
+                            │ HTTP/JSON
+┌─────────────────────────────────────────────────────────┐
+│                   BACKEND                               │
+│  ┌─────────────────────────────────────────────────────┐│
+│  │              SECURITY LAYER                         ││
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ ││
+│  │  │SecurityFilter│  │TokenService │  │SecurityConfig│ ││
+│  │  └─────────────┘  └─────────────┘  └─────────────┘ ││
+│  └─────────────────────────────────────────────────────┘│
+│  ┌─────────────────────────────────────────────────────┐│
+│  │              CONTROLLER LAYER                       ││
+│  │  ┌─────────────┐  ┌─────────────┐                  ││
+│  │  │ContaController│ │AuthController│                 ││
+│  │  └─────────────┘  └─────────────┘                  ││
+│  └─────────────────────────────────────────────────────┘│
+│  ┌─────────────────────────────────────────────────────┐│
+│  │               SERVICE LAYER                         ││
+│  │  ┌─────────────┐  ┌─────────────┐                  ││
+│  │  │ContaService │  │AuthService  │                  ││
+│  │  └─────────────┘  └─────────────┘                  ││
+│  └─────────────────────────────────────────────────────┘│
+│  ┌─────────────────────────────────────────────────────┐│
+│  │              REPOSITORY LAYER                       ││
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ ││
+│  │  │ContaRepo    │  │ClienteRepo  │  │UsuarioRepo  │ ││
+│  │  └─────────────┘  └─────────────┘  └─────────────┘ ││
+│  └─────────────────────────────────────────────────────┘│
+└─────────────────────────────────────────────────────────┘
+                            │ JDBC
+┌─────────────────────────────────────────────────────────┐
+│                 ORACLE DATABASE                         │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐    │
+│  │   usuarios  │  │   clientes  │  │    contas   │    │
+│  └─────────────┘  └─────────────┘  └─────────────┘    │
+└─────────────────────────────────────────────────────────┘
+                </div>
+
+                <h3>Componentes Principais</h3>
+                
+                <h4>🔐 Camada de Segurança</h4>
+                <ul>
+                    <li><strong>SecurityFilter:</strong> Intercepta requisições e valida tokens</li>
+                    <li><strong>TokenService:</strong> Gera e valida tokens JWT</li>
+                    <li><strong>SecurityConfigurations:</strong> Configura regras de segurança</li>
+                    <li><strong>AutenticacaoService:</strong> Carrega dados do usuário</li>
+                </ul>
+
+                <h4>🎮 Camada de Controle</h4>
+                <ul>
+                    <li><strong>AutenticacaoController:</strong> Endpoint de login</li>
+                    <li><strong>ContaController:</strong> Endpoints das contas (protegidos)</li>
+                </ul>
+
+                <h4>💼 Camada de Negócio</h4>
+                <ul>
+                    <li><strong>ContaService:</strong> Regras de negócio das contas</li>
+                    <li><strong>Validações:</strong> Saldo, CPF único, etc.</li>
+                </ul>
+            </div>
+
+            <!-- IMPLEMENTAÇÃO -->
+            <div class="section" id="implementacao">
+                <h2>⚙️ 4. IMPLEMENTAÇÃO PASSO A PASSO</h2>
+                
+                <div class="step">
+                    <h3><span class="step-number">1</span>Dependências Maven</h3>
+                    <div class="code-block">
+&lt;!-- Spring Security --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+&lt;!-- JWT Auth0 --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.auth0&lt;/groupId&gt;
+    &lt;artifactId&gt;java-jwt&lt;/artifactId&gt;
+    &lt;version&gt;4.5.0&lt;/version&gt;
+&lt;/dependency&gt;
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">2</span>Configuração JWT (application.properties)</h3>
+                    <div class="code-block">
+# Chave secreta para JWT
+api.security.token.secret=minha-chave-secreta-jwt-2024
+
+# Configurações de segurança
+spring.jpa.hibernate.ddl-auto=update
+spring.flyway.enabled=false
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">3</span>Entidade Usuario</h3>
+                    <div class="code-block">
+@Entity
+@Table(name = "usuarios")
+public class Usuario implements UserDetails {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    private String login;
+    private String senha; // BCrypt hash
+    
+    // Implementação dos métodos UserDetails...
+}
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">4</span>TokenService - Geração de Tokens</h3>
+                    <div class="code-block">
+@Service
+public class TokenService {
+    
+    @Value("${api.security.token.secret}")
+    private String secret;
+    
+    public String gerarToken(Usuario usuario) {
+        return JWT.create()
+            .withIssuer("API Conta Bancária")
+            .withSubject(usuario.getLogin())
+            .withExpiresAt(dataExpiracao())
+            .sign(Algorithm.HMAC256(secret));
+    }
+    
+    private Instant dataExpiracao() {
+        return LocalDateTime.now()
+            .plusHours(2)
+            .toInstant(ZoneOffset.of("-03:00"));
+    }
+}
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">5</span>SecurityFilter - Validação de Tokens</h3>
+                    <div class="code-block">
+@Component
+public class SecurityFilter extends OncePerRequestFilter {
+    
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                  HttpServletResponse response,
+                                  FilterChain filterChain) {
+        
+        var token = recuperarToken(request);
+        
+        if (token != null) {
+            var subject = tokenService.getSubject(token);
+            var usuario = usuarioRepository.findByLogin(subject);
+            
+            var authentication = new UsernamePasswordAuthenticationToken(
+                usuario, null, usuario.getAuthorities()
+            );
+            
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
+        
+        filterChain.doFilter(request, response);
+    }
+}
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">6</span>Controller de Autenticação</h3>
+                    <div class="code-block">
+@RestController
+@RequestMapping("/login")
+public class AutenticacaoController {
+    
+    @PostMapping
+    public ResponseEntity&lt;DadosTokenJWT&gt; login(@RequestBody @Valid DadosAutenticacao dados) {
+        
+        var authToken = new UsernamePasswordAuthenticationToken(
+            dados.login(), dados.senha()
+        );
+        
+        var authentication = authenticationManager.authenticate(authToken);
+        var usuario = (Usuario) authentication.getPrincipal();
+        var tokenJWT = tokenService.gerarToken(usuario);
+        
+        return ResponseEntity.ok(new DadosTokenJWT(tokenJWT));
+    }
+}
+                    </div>
+                </div>
+            </div>
+
+            <!-- TESTES INSOMNIA -->
+            <div class="section" id="testes-insomnia">
+                <h2>🧪 5. TESTES COM INSOMNIA</h2>
+                
+                <h3>Configuração do Insomnia</h3>
+                <div class="info-box">
+                    <p><strong>Base URL:</strong> http://127.0.0.1:8080</p>
+                    <p><strong>Content-Type:</strong> application/json</p>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">1</span>Teste de Login (POST)</h3>
+                    
+                    <h4>Endpoint:</h4>
+                    <div class="code-block">
+POST http://127.0.0.1:8080/login
+Content-Type: application/json
+                    </div>
+
+                    <h4>Body (JSON):</h4>
+                    <div class="code-block">
+{
+  "login": "admin",
+  "senha": "123456"
+}
+                    </div>
+
+                    <h4>Resposta Esperada (200 OK):</h4>
+                    <div class="code-block">
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJBUEkgQ29udGEgQmFuY8OhcmlhIiwic3ViIjoiYWRtaW4iLCJleHAiOjE2NDI2OTM2MDB9.signature"
+}
+                    </div>
+
+                    <div class="success-box">
+                        <strong>✅ Sucesso:</strong> Copie o token retornado para usar nos próximos testes
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">2</span>Teste sem Token (GET) - Deve dar 401</h3>
+                    
+                    <h4>Endpoint:</h4>
+                    <div class="code-block">
+GET http://127.0.0.1:8080/contas
+                    </div>
+
+                    <h4>Resposta Esperada (401 Unauthorized):</h4>
+                    <div class="code-block">
+{
+  "codigo": "FALHA_AUTENTICACAO",
+  "titulo": "Falha na autenticação",
+  "detalhe": "Token inválido, expirado ou ausente. Faça login novamente"
+}
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">3</span>Teste com Token (GET) - Deve funcionar</h3>
+                    
+                    <h4>Endpoint:</h4>
+                    <div class="code-block">
+GET http://127.0.0.1:8080/contas
+Authorization: Bearer SEU_TOKEN_AQUI
+                    </div>
+
+                    <h4>Resposta Esperada (200 OK):</h4>
+                    <div class="code-block">
+[
+  {
+    "id": 1,
+    "titular": "João Silva (CPF: 12345678901)",
+    "saldo": 1500.00,
+    "idCliente": 1
+  },
+  {
+    "id": 2,
+    "titular": "Maria Santos (CPF: 98765432100)",
+    "saldo": 2300.50,
+    "idCliente": 2
+  }
+]
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">4</span>Teste de Criação de Conta (POST)</h3>
+                    
+                    <h4>Endpoint:</h4>
+                    <div class="code-block">
+POST http://127.0.0.1:8080/contas
+Authorization: Bearer SEU_TOKEN_AQUI
+Content-Type: application/json
+                    </div>
+
+                    <h4>Body (JSON):</h4>
+                    <div class="code-block">
+{
+  "nome": "Carlos Oliveira",
+  "cpf": "11122233344",
+  "saldo": 1000.00
+}
+                    </div>
+
+                    <h4>Resposta Esperada (201 Created):</h4>
+                    <div class="code-block">
+{
+  "id": 5,
+  "titular": "Carlos Oliveira (CPF: 11122233344)",
+  "saldo": 1000.00,
+  "idCliente": 5
+}
+                    </div>
+                </div>
+
+                <h3>Cenários de Erro para Testar</h3>
+                
+                <div class="warning-box">
+                    <h4>🔴 Login com credenciais inválidas:</h4>
+                    <div class="code-block">
+POST /login
+{
+  "login": "admin",
+  "senha": "senhaerrada"
+}
+
+Resposta: 401 Unauthorized
+{
+  "codigo": "CREDENCIAIS_INVALIDAS",
+  "titulo": "Login ou senha incorretos",
+  "detalhe": "Verifique suas credenciais e tente novamente"
+}
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h4>🔴 CPF duplicado:</h4>
+                    <div class="code-block">
+POST /contas (com token válido)
+{
+  "nome": "Teste",
+  "cpf": "12345678901",  // CPF já existe
+  "saldo": 500.00
+}
+
+Resposta: 400 Bad Request
+{
+  "codigo": "CPF_DUPLICADO",
+  "titulo": "CPF já está cadastrado no sistema",
+  "detalhe": "CPF já cadastrado: 12345678901"
+}
+                    </div>
+                </div>
+            </div>
+
+            <!-- TRATAMENTO DE ERROS -->
+            <div class="section" id="tratamento-erros">
+                <h2>🛡️ 6. TRATAMENTO DE ERROS</h2>
+                
+                <h3>Classe TratadorDeErros</h3>
+                <p>Implementamos um tratador global de erros usando <code>@RestControllerAdvice</code> que intercepta todas as exceções e retorna respostas JSON padronizadas.</p>
+
+                <h3>Tipos de Erros Tratados</h3>
+                
+                <div class="step">
+                    <h4>🔴 401 Unauthorized - Credenciais Inválidas</h4>
+                    <div class="code-block">
+@ExceptionHandler(BadCredentialsException.class)
+public ResponseEntity&lt;DadosErroResposta&gt; tratarErroBadCredentials() {
+    var erro = new DadosErroResposta(
+        "CREDENCIAIS_INVALIDAS",
+        "Login ou senha incorretos",
+        "Verifique suas credenciais e tente novamente"
+    );
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(erro);
+}
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h4>🔴 400 Bad Request - Validação de Campos</h4>
+                    <div class="code-block">
+@ExceptionHandler(MethodArgumentNotValidException.class)
+public ResponseEntity&lt;DadosErroValidacao&gt; tratarErro400(MethodArgumentNotValidException ex) {
+    var erros = ex.getFieldErrors();
+    var dadosErro = new DadosErroValidacao(
+        "DADOS_INVALIDOS",
+        "Os dados enviados são inválidos",
+        erros.stream().map(DadosErroValidacaoCampo::new).toList()
+    );
+    return ResponseEntity.badRequest().body(dadosErro);
+}
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h4>🔴 404 Not Found - Recurso Não Encontrado</h4>
+                    <div class="code-block">
+@ExceptionHandler(EntityNotFoundException.class)
+public ResponseEntity&lt;DadosErroResposta&gt; tratarErro404() {
+    var erro = new DadosErroResposta(
+        "RECURSO_NAO_ENCONTRADO",
+        "O recurso solicitado não foi encontrado",
+        "Verifique o ID informado e tente novamente"
+    );
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
+}
+                    </div>
+                </div>
+
+                <h3>Estrutura das Respostas de Erro</h3>
+                <div class="code-block">
+// Erro simples
+{
+  "codigo": "CREDENCIAIS_INVALIDAS",
+  "titulo": "Login ou senha incorretos", 
+  "detalhe": "Verifique suas credenciais e tente novamente"
+}
+
+// Erro de validação (múltiplos campos)
+{
+  "codigo": "DADOS_INVALIDOS",
+  "titulo": "Os dados enviados são inválidos",
+  "erros": [
+    {
+      "campo": "nome",
+      "mensagem": "Nome é obrigatório"
+    },
+    {
+      "campo": "cpf", 
+      "mensagem": "CPF deve ter 11 dígitos"
+    }
+  ]
+}
+                </div>
+            </div>
+
+            <!-- SEGURANÇA -->
+            <div class="section" id="seguranca">
+                <h2>🔒 7. ASPECTOS DE SEGURANÇA</h2>
+                
+                <h3>Medidas de Segurança Implementadas</h3>
+                
+                <ul class="checklist">
+                    <li><strong>Senhas Criptografadas:</strong> BCrypt com salt automático</li>
+                    <li><strong>Tokens com Expiração:</strong> 2 horas de validade</li>
+                    <li><strong>Stateless Authentication:</strong> Sem sessões no servidor</li>
+                    <li><strong>CORS Configurado:</strong> Controle de origens permitidas</li>
+                    <li><strong>CSRF Desabilitado:</strong> Apropriado para APIs stateless</li>
+                    <li><strong>Validação de Entrada:</strong> Bean Validation em todos os endpoints</li>
+                    <li><strong>Tratamento de Erros:</strong> Não exposição de informações sensíveis</li>
+                </ul>
+
+                <h3>Configurações de Segurança</h3>
+                <div class="code-block">
+@Configuration
+@EnableWebSecurity
+public class SecurityConfigurations {
+    
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+        return http
+            .csrf(csrf -> csrf.disable())  // Desabilita CSRF para JWT
+            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(req -> {
+                req.requestMatchers(HttpMethod.POST, "/login").permitAll();
+                req.requestMatchers("/login.html", "/login.css", "/auth.js").permitAll();
+                req.anyRequest().authenticated();  // Todas as outras rotas protegidas
+            })
+            .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+            .build();
+    }
+}
+                </div>
+
+                <h3>Boas Práticas de Segurança</h3>
+                
+                <div class="warning-box">
+                    <h4>⚠️ Em Produção:</h4>
+                    <ul>
+                        <li>Use chave JWT complexa e armazene em variável de ambiente</li>
+                        <li>Configure HTTPS obrigatório</li>
+                        <li>Implemente rate limiting para login</li>
+                        <li>Use refresh tokens para renovação automática</li>
+                        <li>Configure logs de auditoria</li>
+                        <li>Implemente bloqueio por tentativas de login</li>
+                    </ul>
+                </div>
+
+                <h3>Fluxo de Segurança Completo</h3>
+                <div class="flow-diagram">
+1. 🔐 USUÁRIO envia credenciais
+   ↓
+2. 🛡️ SPRING SECURITY valida com BCrypt
+   ↓
+3. ✅ Se válido: TokenService gera JWT
+   ↓
+4. 📱 CLIENTE armazena token no localStorage
+   ↓
+5. 🔄 CLIENTE envia token no header Authorization
+   ↓
+6. 🛡️ SecurityFilter intercepta e valida token
+   ↓
+7. ✅ Se válido: permite acesso ao recurso
+   ↓
+8. ❌ Se inválido: retorna 401 Unauthorized
+                </div>
+
+                <h3>Monitoramento e Logs</h3>
+                <div class="info-box">
+                    <p>O sistema registra automaticamente:</p>
+                    <ul>
+                        <li>Tentativas de login (sucesso e falha)</li>
+                        <li>Tokens gerados e validados</li>
+                        <li>Acessos a recursos protegidos</li>
+                        <li>Erros de autenticação e autorização</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- CONCLUSÃO -->
+            <div class="section">
+                <h2>🎯 CONCLUSÃO</h2>
+                
+                <p>Este projeto demonstra uma implementação completa e segura de autenticação JWT em Spring Boot, seguindo as melhores práticas de segurança e arquitetura de software.</p>
+
+                <div class="success-box">
+                    <h3>✅ Objetivos Alcançados:</h3>
+                    <ul class="checklist">
+                        <li>Sistema de autenticação JWT funcional</li>
+                        <li>Proteção de rotas da API</li>
+                        <li>Interface web responsiva</li>
+                        <li>Tratamento robusto de erros</li>
+                        <li>Código bem documentado e comentado</li>
+                        <li>Testes funcionais validados</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h3>📚 Conceitos Aprendidos:</h3>
+                    <ul>
+                        <li>Funcionamento interno do JWT</li>
+                        <li>Spring Security 6 com configuração moderna</li>
+                        <li>Filtros customizados de segurança</li>
+                        <li>Criptografia de senhas com BCrypt</li>
+                        <li>Tratamento global de exceções</li>
+                        <li>Arquitetura em camadas</li>
+                        <li>Testes de API com Insomnia</li>
+                    </ul>
+                </div>
+
+                <p><strong>Desenvolvido por:</strong> Guilherme - Dataprev</p>
+                <p><strong>Tecnologia:</strong> Spring Boot 3.3.8 + Spring Security 6 + JWT</p>
+                <p><strong>Data:</strong> Janeiro 2026</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
